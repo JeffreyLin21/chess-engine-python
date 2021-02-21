@@ -21,7 +21,8 @@ bRook = pygame.image.load('sprites/black_rook.png')
 
 #temporary table
 board = "1rkbqKbkr/2pppppppp|7pppppppp/8rkbqKbkr"
-    
+
+# draw board function
 def drawBoard():
     global board
     row = 0
