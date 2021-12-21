@@ -1,114 +1,81 @@
 import pygame
-import time
+from constants import *
 
-# Initialize pygame and predefine some useful stuff
-pygame.mixer.pre_init(44100, 16, 1, 512)
 pygame.init()
+pygame.display.set_caption("Chess")
 screen = pygame.display.set_mode((720, 720))
-white = (238, 238, 210)
-green = (118, 150, 86)
-high_green = (186, 202, 43)
-high_white = (246, 246, 105)
-wPawn = pygame.image.load('sprites/white_pawn.png')
-wKing = pygame.image.load('sprites/white_king.png')
-wQueen = pygame.image.load('sprites/white_queen.png')
-wBishop = pygame.image.load('sprites/white_bishop.png')
-wKnight = pygame.image.load('sprites/white_knight.png')
-wRook = pygame.image.load('sprites/white_rook.png')
-bPawn = pygame.image.load('sprites/black_pawn.png')
-bKing = pygame.image.load('sprites/black_king.png')
-bQueen = pygame.image.load('sprites/black_queen.png')
-bBishop = pygame.image.load('sprites/black_bishop.png')
-bKnight = pygame.image.load('sprites/black_knight.png')
-bRook = pygame.image.load('sprites/black_rook.png')
-move1_sound = pygame.mixer.Sound("sounds/move.wav")
-move2_sound = pygame.mixer.Sound("sounds/move2.wav")
-capture_sound = pygame.mixer.Sound("sounds/capture.wav")
-colourTable = [
-    ['w', 'g', 'w', 'g', 'w', 'g', 'w', 'g'],
-    ['g', 'w', 'g', 'w', 'g', 'w', 'g', 'w'],
-]
 
-def fenToBoard(fen):
-    board = [
-        ['0', '0', '0', '0', '0', '0', '0', '0'],
-        ['0', '0', '0', '0', '0', '0', '0', '0'],
-        ['0', '0', '0', '0', '0', '0', '0', '0'],
-        ['0', '0', '0', '0', '0', '0', '0', '0'],
-        ['0', '0', '0', '0', '0', '0', '0', '0'],
-        ['0', '0', '0', '0', '0', '0', '0', '0'],
-        ['0', '0', '0', '0', '0', '0', '0', '0'],
-        ['0', '0', '0', '0', '0', '0', '0', '0']
-    ]
-    index = 0
-    row = 0
-    for i in fen:
-        if i.isdigit():
-            index += (int)(i)
-        elif i == '/':
-            index = 0
-            row += 1
+def drawSquare(x, y, selected, highlighted, isPossibleMove):
+    colour = (0,0,0)
+    if colourTable[x%2][y%2] == 'w':
+        if selected:
+            colour = selected_white
+        elif highlighted:
+            colour = high_white
+        elif isPossibleMove:
+            colour = move_white
         else:
-            board[row][index] = i
-            index += 1
-    return board
-
-# draw board function
-def drawBoard(fen):
-    global board
-    board = fenToBoard(fen)
-    colour = 'b'
-    for i in range(8):
-        for j in range(8):
-            if board[i][j].islower():
-                if board[i][j] == 'p':
-                    screen.blit(bPawn, (90 * j + 21, 90 * i + 16))
-                elif board[i][j] == 'k':
-                    screen.blit(bKing, (90 * j + 15, 90 * i + 14))
-                elif board[i][j] == 'q':
-                    screen.blit(bQueen, (90 * j + 10, 90 * i + 10))
-                elif board[i][j] == 'n':
-                    screen.blit(bKnight, (90 * j + 14, 90 * i + 14))
-                elif board[i][j] == 'b':
-                    screen.blit(bBishop, (90 * j + 14, 90 * i + 14))
-                elif board[i][j] == 'r':
-                    screen.blit(bRook, (90 * j + 16, 90 * i + 11)) 
-            else:
-                if board[i][j] == 'P':
-                    screen.blit(wPawn, (90 * j + 21, 90 * i + 16))
-                elif board[i][j] == 'K':
-                    screen.blit(wKing, (90 * j + 15, 90 * i + 14))
-                elif board[i][j] == 'Q':
-                    screen.blit(wQueen, (90 * j + 10, 90 * i + 10))
-                elif board[i][j] == 'N':
-                    screen.blit(wKnight, (90 * j + 14, 90 * i + 14))
-                elif board[i][j] == 'B':
-                    screen.blit(wBishop, (90 * j + 14, 90 * i + 14))
-                elif board[i][j] == 'R':
-                    screen.blit(wRook, (90 * j + 16, 90 * i + 11))  
-def main():
-    running = True
-    square = (-1, -1)
-    while running:        
-        time.sleep(0.01)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-def start():
-    pygame.display.set_caption("Chess")
-    pygame.display.set_icon(pygame.image.load('pawn.png'))
-    screen.fill(white)
-    start = 0
-    for i in range(0, 8, 1):
-        for j in range(1, 8, 2):
-            pygame.draw.rect(screen, green, (90 * j  - start, 90 * i, 90, 90))
-        if start == 0:
-            start = 90
+            colour = white
+    else:
+        if selected:
+            colour = selected_green
+        elif highlighted:
+            colour = high_green
+        elif isPossibleMove:
+            colour = move_green
         else:
-            start = 0
-    drawBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
+            colour = green
+    if isPossibleMove:
+        if board[x][y] == '0':
+            pygame.draw.circle(screen, colour, (90 * y + 45, 90 * x + 45), 15)
+        else:
+            pygame.draw.circle(screen, colour, (90 * y + 45, 90 * x + 45), 44, 6)
+    else:
+        pygame.draw.rect(screen, colour, (90 * y, 90 * x, 90, 90))
+        if board[x][y].islower():
+            if board[x][y] == 'p':
+                screen.blit(bPawn, (90 * y + 21, 90 * x + 16))
+            elif board[x][y] == 'k':
+                screen.blit(bKing, (90 * y + 15, 90 * x + 14))
+            elif board[x][y] == 'q':
+                screen.blit(bQueen, (90 * y + 10, 90 * x + 10))
+            elif board[x][y] == 'n':
+                screen.blit(bKnight, (90 * y + 14, 90 * x + 14))
+            elif board[x][y] == 'b':
+                screen.blit(bBishop, (90 * y + 14, 90 * x + 14))
+            elif board[x][y] == 'r':
+                screen.blit(bRook, (90 * y + 16, 90 * x + 11)) 
+        else:
+            if board[x][y] == 'P':
+                screen.blit(wPawn, (90 * y + 21, 90 * x + 16))
+            elif board[x][y] == 'K':
+                screen.blit(wKing, (90 * y + 15, 90 * x + 14))
+            elif board[x][y] == 'Q':
+                screen.blit(wQueen, (90 * y + 10, 90 * x + 10))
+            elif board[x][y] == 'N':
+                screen.blit(wKnight, (90 * y + 14, 90 * x + 14))
+            elif board[x][y] == 'B':
+                screen.blit(wBishop, (90 * y + 14, 90 * x + 14))
+            elif board[x][y] == 'R':
+                screen.blit(wRook, (90 * y + 16, 90 * x + 11))  
+
+def select(pos):
+    drawSquare(pos[0], pos[1], True, False, False)
     pygame.display.update()
-    main()
 
-start()
+    #show possible moves
+
+def moveSelected(selected, position):
+    global board
+    board[position[0]][position[1]] = board[selected[0]][selected[1]]
+    board[selected[0]][selected[1]] = '0'
+    drawSquare(selected[0], selected[1], True, False, False)
+    drawSquare(position[0], position[1], True, False, False)
+    pygame.display.update()
+
+
+def draw_entire_board():
+    for x in range(8):
+        for y in range(8):
+            drawSquare(x, y, False, False, False)
+    pygame.display.update()
