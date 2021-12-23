@@ -253,9 +253,9 @@ def getWB(position, tmpBoard):
         switchPos((position[0], position[1]), (position[0]-k, position[1]-k), tmpBoard)
         if not isWKingChecked(tmpBoard, 0):
             validMoves.append((position[0]-k, position[1]-k))
+        switchPos((position[0]-k, position[1]-k), (position[0], position[1]), tmpBoard)
         if board[i-k][j-k].islower():
             break
-        switchPos((position[0]-k, position[1]-k), (position[0], position[1]), tmpBoard)
 
     for k in range (1, min(i, (7-j))+1):
         if not board[i-k][j+k].islower() and not board[i-k][j+k].isdigit():
@@ -263,27 +263,30 @@ def getWB(position, tmpBoard):
         switchPos((position[0], position[1]), (position[0]-k, position[1]+k), tmpBoard)
         if not isWKingChecked(tmpBoard, 0):
             validMoves.append((position[0]-k, position[1]+k))
+        switchPos((position[0]-k, position[1]+k), (position[0], position[1]), tmpBoard)
         if board[i-k][j+k].islower():
             break
-        switchPos((position[0]-k, position[1]+k), (position[0], position[1]), tmpBoard)
+        
     for k in range (1, min((7-i), j)+1):
         if not board[i+k][j-k].islower() and not board[i+k][j-k].isdigit():
             break  
         switchPos((position[0], position[1]), (position[0]+k, position[1]-k), tmpBoard)
         if not isWKingChecked(tmpBoard, 0):
             validMoves.append((position[0]+k, position[1]-k))
+        switchPos((position[0]+k, position[1]-k), (position[0], position[1]), tmpBoard)
         if board[i+k][j-k].islower():
             break
-        switchPos((position[0]+k, position[1]-k), (position[0], position[1]), tmpBoard)
+        
     for k in range (1, min((7-i), (7-j))+1):
         if not board[i+k][j+k].islower() and not board[i+k][j+k].isdigit():
             break  
         switchPos((position[0], position[1]), (position[0]+k, position[1]+k), tmpBoard)
         if not isWKingChecked(tmpBoard, 0):
             validMoves.append((position[0]+k, position[1]+k))
+        switchPos((position[0]+k, position[1]+k), (position[0], position[1]), tmpBoard)
         if board[i+k][j+k].islower():
             break
-        switchPos((position[0]+k, position[1]+k), (position[0], position[1]), tmpBoard)
+        
     return validMoves
 
 def getBB(position, tmpBoard):
@@ -296,27 +299,30 @@ def getBB(position, tmpBoard):
         switchPos((position[0], position[1]), (position[0]-k, position[1]-k), tmpBoard)
         if not isBKingChecked(tmpBoard, 1):
             validMoves.append((position[0]-k, position[1]-k))
+        switchPos((position[0]-k, position[1]-k), (position[0], position[1]), tmpBoard)
         if not board[i-k][j-k].islower() and not board[i-k][j-k].isdigit():
             break
-        switchPos((position[0]-k, position[1]-k), (position[0], position[1]), tmpBoard)
+        
     for k in range (1, min(i, (7-j))+1):
         if board[i-k][j+k].islower():
             break  
         switchPos((position[0], position[1]), (position[0]-k, position[1]+k), tmpBoard)
         if not isBKingChecked(tmpBoard, 1):
             validMoves.append((position[0]-k, position[1]+k))
+        switchPos((position[0]-k, position[1]+k), (position[0], position[1]), tmpBoard)
         if not board[i-k][j+k].isdigit() and not board[i-k][j+k].islower():
             break
-        switchPos((position[0]-k, position[1]+k), (position[0], position[1]), tmpBoard)
+        
     for k in range (1, min((7-i), j)+1):
         if board[i+k][j-k].islower():
             break  
         switchPos((position[0], position[1]), (position[0]+k, position[1]-k), tmpBoard)
         if not isBKingChecked(tmpBoard, 1):
             validMoves.append((position[0]+k, position[1]-k))
+        switchPos((position[0]+k, position[1]-k), (position[0], position[1]), tmpBoard)
         if not board[i+k][j-k].isdigit() and not board[i+k][j-k].islower():
             break
-        switchPos((position[0]+k, position[1]-k), (position[0], position[1]), tmpBoard)
+        
 
     for k in range (1, min((7-i), (7-j))+1):
         if board[i+k][j+k].islower():
@@ -324,9 +330,10 @@ def getBB(position, tmpBoard):
         switchPos((position[0], position[1]), (position[0]+k, position[1]+k), tmpBoard)
         if not isBKingChecked(tmpBoard, 1):
             validMoves.append((position[0]+k, position[1]+k))
+        switchPos((position[0]+k, position[1]+k), (position[0], position[1]), tmpBoard)
         if not board[i+k][j+k].isdigit() and not board[i+k][j+k].islower():
             break
-        switchPos((position[0]+k, position[1]+k), (position[0], position[1]), tmpBoard)
+        
     return validMoves
 
 def getWN(position, tmpBoard):
