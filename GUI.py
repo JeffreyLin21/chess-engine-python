@@ -1,5 +1,6 @@
 import pygame
 from constants import *
+from engine import *
 
 pygame.init()
 pygame.display.set_caption("Chess")
@@ -61,9 +62,11 @@ def drawSquare(x, y, selected, highlighted, isPossibleMove):
 
 def select(pos):
     drawSquare(pos[0], pos[1], True, False, False)
+    moves = getMoves(pos, board)
+    for move in moves:
+        drawSquare(move[0], move[1], False, False, True)
+    print (moves)
     pygame.display.update()
-
-    #show possible moves
 
 def moveSelected(selected, position):
     global board

@@ -45,4 +45,4 @@ wCastleL = True
 wCastleR = True
 bCastleL = True
 bCastleR = True
-
+initial = '0'
