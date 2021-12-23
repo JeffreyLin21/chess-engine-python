@@ -21,9 +21,10 @@ def controller(mouseButton, position):
         highlightMode = False
         draw_entire_board()
         if not selected == (-1,-1) and isNotSame(selected, position):
-            moveSelected(selected, position)
+            flag = moveSelected(selected, position)
             selected = (-1, -1)
-            switchTurn()
+            if flag:
+                switchTurn()
         elif selected == position:
             selected = (-1,-1)
         elif board[position[0]][position[1]] != '0' and turn == board[position[0]][position[1]].islower():

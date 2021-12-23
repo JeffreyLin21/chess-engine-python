@@ -60,7 +60,14 @@ def drawSquare(x, y, selected, highlighted, isPossibleMove):
             elif board[x][y] == 'R':
                 screen.blit(wRook, (90 * y + 16, 90 * x + 11))  
 
+def draw_entire_board():
+    for x in range(8):
+        for y in range(8):
+            drawSquare(x, y, False, False, False)
+    pygame.display.update()
+
 def select(pos):
+    global moves
     drawSquare(pos[0], pos[1], True, False, False)
     moves = getMoves(pos, board)
     for move in moves:
@@ -69,19 +76,21 @@ def select(pos):
 
 def moveSelected(selected, position):
     global board
-    board[position[0]][position[1]] = board[selected[0]][selected[1]]
-    board[selected[0]][selected[1]] = '0'
-    drawSquare(selected[0], selected[1], True, False, False)
-    drawSquare(position[0], position[1], True, False, False)
-    pygame.display.update()
-    if board[position[0]][position[1]] == 'k':
-        bK = board[position[0]][position[1]]
-    elif board[position[0]][position[1]] == 'K':
-        wK = board[position[0]][position[1]]
+
+    if position in moves:
+
+        board[position[0]][position[1]] = board[selected[0]][selected[1]]
+        board[selected[0]][selected[1]] = '0'
+        drawSquare(selected[0], selected[1], True, False, False)
+        drawSquare(position[0], position[1], True, False, False)
+        pygame.display.update()
+        if board[position[0]][position[1]] == 'k':
+            bK = board[position[0]][position[1]]
+        elif board[position[0]][position[1]] == 'K':
+            wK = board[position[0]][position[1]]
+        return True
+    else:
+        draw_entire_board()
+        return False
 
 
-def draw_entire_board():
-    for x in range(8):
-        for y in range(8):
-            drawSquare(x, y, False, False, False)
-    pygame.display.update()
