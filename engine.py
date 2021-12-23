@@ -1,661 +1,649 @@
-from constants import *
-
-def switchPos(pos1, pos2, tmpBoard):
-    global initial
-    if initial == '0':
-        initial = tmpBoard[pos2[0]][pos2[1]]
-        tmpBoard[pos2[0]][pos2[1]] = tmpBoard[pos1[0]][pos1[1]]
-        tmpBoard[pos1[0]][pos1[1]] = '0'
+def switchPos(pos1, pos2, game):
+    if game.initial == '0':
+        game.initial = game.board[pos2[0]][pos2[1]]
+        game.board[pos2[0]][pos2[1]] = game.board[pos1[0]][pos1[1]]
+        game.board[pos1[0]][pos1[1]] = '0'
     else:
-        tmpBoard[pos2[0]][pos2[1]] = tmpBoard[pos1[0]][pos1[1]]
-        tmpBoard[pos1[0]][pos1[1]] = initial
-        initial = '0'      
+        game.board[pos2[0]][pos2[1]] = game.board[pos1[0]][pos1[1]]
+        game.board[pos1[0]][pos1[1]] = game.initial
+        game.initial = '0'      
 
-def isBKingChecked(tmpBoard, side):
-    flag = False
-    i, j = bK
+def isBKingChecked(game, side):
+    i, j = game.bK
 
     if i > 1:
-        if j > 0 and tmpBoard[i-2][j-1] == 'N':
+        if j > 0 and game.board[i-2][j-1] == 'N':
             return True
-        if j < 7 and tmpBoard[i-2][j+1] == 'N':
+        if j < 7 and game.board[i-2][j+1] == 'N':
             return True
     if i > 0:
-        if j > 1 and tmpBoard[i-1][j-2] == 'N':
+        if j > 1 and game.board[i-1][j-2] == 'N':
             return True
-        if j < 6 and tmpBoard[i-1][j+2] == 'N':
+        if j < 6 and game.board[i-1][j+2] == 'N':
             return True
     if i < 5:
-        if j > 0 and tmpBoard[i+2][j-1] == 'N':
+        if j > 0 and game.board[i+2][j-1] == 'N':
             return True
-        if j < 7 and tmpBoard[i+2][j+1] == 'N':
+        if j < 7 and game.board[i+2][j+1] == 'N':
             return True
     if i < 6:
-        if j > 1 and tmpBoard[i+1][j-2] == 'N':
+        if j > 1 and game.board[i+1][j-2] == 'N':
             return True
-        if j < 6 and tmpBoard[i+1][j+2] == 'N':
+        if j < 6 and game.board[i+1][j+2] == 'N':
             return True
 
     for k in range (i-1, -1, -1):
-        if board[k][j] == 'R' or board[k][j] == 'Q' or (board[k][j] == 'K' and k == i-1):
+        if game.board[k][j] == 'R' or game.board[k][j] == 'Q' or (game.board[k][j] == 'K' and k == i-1):
             return True
-        if not board[k][j].isdigit():
+        if not game.board[k][j].isdigit():
             break
 
     for k in range (i+1, 8):
-        if board[k][j] == 'R' or board[k][j] == 'Q' or (board[k][j] == 'K' and k == i+1):
+        if game.board[k][j] == 'R' or game.board[k][j] == 'Q' or (game.board[k][j] == 'K' and k == i+1):
             return True
-        if not board[k][j].isdigit():
+        if not game.board[k][j].isdigit():
             break
 
     for k in range (j-1, -1, -1):
-        if board[i][k] == 'R' or board[i][k] == 'Q' or (board[i][k] == 'K' and k == j-1):
+        if game.board[i][k] == 'R' or game.board[i][k] == 'Q' or (game.board[i][k] == 'K' and k == j-1):
             return True
-        if not board[i][k].isdigit():
+        if not game.board[i][k].isdigit():
             break
 
     for k in range (j+1, 8):
-        if board[i][k] == 'R' or board[i][k] == 'Q' or (board[i][k] == 'K' and k == j+1):
+        if game.board[i][k] == 'R' or game.board[i][k] == 'Q' or (game.board[i][k] == 'K' and k == j+1):
             return True
-        if not board[i][k].isdigit():
+        if not game.board[i][k].isdigit():
             break
 
     for k in range (1, min(i, j)+1):
-        if board[i-k][j-k] == 'B' or board[i-k][j-k] == 'Q' or ((board[i-k][j-k] == 'P' or board[i-k][j-k] == 'K') and k == 1):
+        if game.board[i-k][j-k] == 'B' or game.board[i-k][j-k] == 'Q' or ((game.board[i-k][j-k] == 'P' or game.board[i-k][j-k] == 'K') and k == 1):
             return True  
-        if not board[i-k][j-k].isdigit():
+        if not game.board[i-k][j-k].isdigit():
             break
 
     for k in range (1, min(i, (7-j))+1):
-        if board[i-k][j+k] == 'B' or board[i-k][j+k] == 'Q' or ((board[i-k][j+k] == 'P' or board[i-k][j+k] == 'K') and k == 1):
+        if game.board[i-k][j+k] == 'B' or game.board[i-k][j+k] == 'Q' or ((game.board[i-k][j+k] == 'P' or game.board[i-k][j+k] == 'K') and k == 1):
             return True
-        if not board[i-k][j+k].isdigit():
+        if not game.board[i-k][j+k].isdigit():
             break
 
     for k in range (1, min((7-i), j)+1):
-        if board[i+k][j-k] == 'B' or board[i+k][j-k] == 'Q' or ((board[i+k][j-k] == 'P' or board[i+k][j-k] == 'K') and k == 1):
+        if game.board[i+k][j-k] == 'B' or game.board[i+k][j-k] == 'Q' or ((game.board[i+k][j-k] == 'P' or game.board[i+k][j-k] == 'K') and k == 1):
             return True  
-        if not board[i+k][j-k].isdigit():
+        if not game.board[i+k][j-k].isdigit():
             break
         
     for k in range (1, min((7-i), (7-j))+1):
-        if board[i+k][j+k] == 'B' or board[i+k][j+k] == 'Q' or ((board[i+k][j+k] == 'P' or board[i+k][j+k] == 'K') and k == 1):
+        if game.board[i+k][j+k] == 'B' or game.board[i+k][j+k] == 'Q' or ((game.board[i+k][j+k] == 'P' or game.board[i+k][j+k] == 'K') and k == 1):
             return True
-        if not board[i+k][j+k].isdigit():
+        if not game.board[i+k][j+k].isdigit():
             break
     return False
 
-def isWKingChecked(tmpBoard, side):
+def isWKingChecked(game, side):
 
-    flag = False
-    i, j = wK
-    for i in range(8):
-        for j in range(8):
-            if tmpBoard[i][j] == 'K':
-                flag = True
-                break
-        if flag:
-            break
+    i, j = game.wK
 
     if i > 1:
-        if j > 0 and tmpBoard[i-2][j-1] =='n':
+        if j > 0 and game.board[i-2][j-1] =='n':
             return True
-        if j < 7 and tmpBoard[i-2][j+1] =='n':
+        if j < 7 and game.board[i-2][j+1] =='n':
             return True
     if i > 0:
-        if j > 1 and tmpBoard[i-1][j-2] =='n':
+        if j > 1 and game.board[i-1][j-2] =='n':
             return True
-        if j < 6 and tmpBoard[i-1][j+2] =='n':
+        if j < 6 and game.board[i-1][j+2] =='n':
             return True
     if i < 5:
-        if j > 0 and tmpBoard[i+2][j-1] =='n':
+        if j > 0 and game.board[i+2][j-1] =='n':
             return True
-        if j < 7 and tmpBoard[i+2][j+1] =='n':
+        if j < 7 and game.board[i+2][j+1] =='n':
             return True
     if i < 6:
-        if j > 1 and tmpBoard[i+1][j-2] =='n':
+        if j > 1 and game.board[i+1][j-2] =='n':
             return True
-        if j < 6 and tmpBoard[i+1][j+2] =='n':
+        if j < 6 and game.board[i+1][j+2] =='n':
             return True
 
     for k in range (i-1, -1, -1):
-        if board[k][j] == 'r' or board[k][j] == 'q' or (board[k][j] == 'k' and k == i-1):
+        if game.board[k][j] == 'r' or game.board[k][j] == 'q' or (game.board[k][j] == 'k' and k == i-1):
             return True
-        if not board[k][j].isdigit():
+        if not game.board[k][j].isdigit():
             break
     
     for k in range (i+1, 8):
-        if board[k][j] == 'r' or board[k][j] == 'q' or (board[k][j] == 'k' and k == i+i):
+        if game.board[k][j] == 'r' or game.board[k][j] == 'q' or (game.board[k][j] == 'k' and k == i+i):
             return True
-        if not board[k][j].isdigit():
+        if not game.board[k][j].isdigit():
             break
 
     for k in range (j-1, -1, -1):
-        if board[i][k] == 'r' or board[i][k] == 'q' or (board[i][k] == 'k' and k == j-1):
+        if game.board[i][k] == 'r' or game.board[i][k] == 'q' or (game.board[i][k] == 'k' and k == j-1):
             return True
-        if not board[i][k].isdigit():
+        if not game.board[i][k].isdigit():
             break   
     for k in range (j+1, 8):
-        if board[i][k] == 'r' or board[i][k] == 'q' or (board[i][k] == 'k' and k == j+1):
+        if game.board[i][k] == 'r' or game.board[i][k] == 'q' or (game.board[i][k] == 'k' and k == j+1):
             return True
-        if not board[i][k].isdigit():
+        if not game.board[i][k].isdigit():
             break
 
     for k in range (1, min(i, j)+1):
-        if board[i-k][j-k] == 'b' or board[i-k][j-k] == 'q' or ((board[i-k][j-k] == 'p' or board[i-k][j-k] == 'k') and k == 1):
+        if game.board[i-k][j-k] == 'b' or game.board[i-k][j-k] == 'q' or ((game.board[i-k][j-k] == 'p' or game.board[i-k][j-k] == 'k') and k == 1):
             return True  
-        if not board[i-k][j-k].isdigit():
+        if not game.board[i-k][j-k].isdigit():
             break
 
     for k in range (1, min(i, (7-j))+1):
-        if board[i-k][j+k] == 'b' or board[i-k][j+k] == 'q' or ((board[i-k][j+k] == 'p' or board[i-k][j+k] == 'k') and k == 1):
+        if game.board[i-k][j+k] == 'b' or game.board[i-k][j+k] == 'q' or ((game.board[i-k][j+k] == 'p' or game.board[i-k][j+k] == 'k') and k == 1):
             return True
-        if not board[i-k][j+k].isdigit():
+        if not game.board[i-k][j+k].isdigit():
             break
 
     for k in range (1, min((7-i), j)+1):
-        if board[i+k][j-k] == 'b' or board[i+k][j-k] == 'q' or ((board[i+k][j-k] == 'p' or board[i+k][j-k] == 'k') and k == 1):
+        if game.board[i+k][j-k] == 'b' or game.board[i+k][j-k] == 'q' or ((game.board[i+k][j-k] == 'p' or game.board[i+k][j-k] == 'k') and k == 1):
             return True  
-        if not board[i+k][j-k].isdigit():
+        if not game.board[i+k][j-k].isdigit():
             break
 
     for k in range (1, min((7-i), (7-j))+1):
-        if board[i+k][j+k] == 'b' or board[i+k][j+k] == 'q' or ((board[i+k][j+k] == 'p' or board[i+k][j+k] == 'k') and k == 1):
+        if game.board[i+k][j+k] == 'b' or game.board[i+k][j+k] == 'q' or ((game.board[i+k][j+k] == 'p' or game.board[i+k][j+k] == 'k') and k == 1):
             return True
-        if not board[i+k][j+k].isdigit():
+        if not game.board[i+k][j+k].isdigit():
             break
     return False
 
 
-def getWP(position, tmpBoard):
+def getWP(position, game):
     validMoves = []
 
-    if position[0] > 0 and tmpBoard[position[0]-1][position[1]] == '0':
-        switchPos((position[0], position[1]), (position[0]-1, position[1]), tmpBoard)
-        if not isWKingChecked(tmpBoard, 0):
+    if position[0] > 0 and game.board[position[0]-1][position[1]] == '0':
+        switchPos((position[0], position[1]), (position[0]-1, position[1]), game)
+        if not isWKingChecked(game, 0):
             validMoves.append((position[0]-1, position[1]))
-            if position[0] == 6 and tmpBoard[position[0]-2][position[1]] == '0':
-                switchPos((position[0], position[1]), (position[0]-2, position[1]), tmpBoard)
-                if not isWKingChecked(tmpBoard, 0):
+            if position[0] == 6 and game.board[position[0]-2][position[1]] == '0':
+                switchPos((position[0], position[1]), (position[0]-2, position[1]), game)
+                if not isWKingChecked(game, 0):
                     validMoves.append((position[0]-2, position[1]))
-                switchPos((position[0]-2, position[1]), (position[0], position[1]), tmpBoard)
-        switchPos((position[0]-1, position[1]), (position[0], position[1]), tmpBoard)
+                switchPos((position[0]-2, position[1]), (position[0], position[1]), game)
+        switchPos((position[0]-1, position[1]), (position[0], position[1]), game)
 
-    if position[0] > 0 and position[1] > 0 and tmpBoard[position[0]-1][position[1]-1].islower():
-        switchPos((position[0], position[1]), (position[0]-1, position[1]-1), tmpBoard)
-        if not isWKingChecked(tmpBoard, 0):
+    if position[0] > 0 and position[1] > 0 and game.board[position[0]-1][position[1]-1].islower():
+        switchPos((position[0], position[1]), (position[0]-1, position[1]-1), game)
+        if not isWKingChecked(game, 0):
             validMoves.append((position[0]-1, position[1]-1))       
-        switchPos((position[0]-1, position[1]-1), (position[0], position[1]), tmpBoard)
+        switchPos((position[0]-1, position[1]-1), (position[0], position[1]), game)
 
-    if position[0] > 0 and position[1] < 7 and tmpBoard[position[0]-1][position[1]+1].islower():
-        switchPos((position[0], position[1]), (position[0]+1, position[1]+1), tmpBoard)
-        if not isWKingChecked(tmpBoard, 0):
-            validMoves.append((position[0]+1, position[1]+1))  
-        switchPos((position[0]+1, position[1]+1), (position[0], position[1]), tmpBoard)
-    if not enpassent == (-1, -1) and position[0] == enpassent[0] and (position[1] - 1 == enpassent[1] or position[1] + 1 == enpassent[1]):
-        switchPos((position[0], position[1]), (enpassent[0]-1, enpassent[1]), tmpBoard)
-        if not isWKingChecked(tmpBoard, 0):
-            validMoves.append((enpassent[0]-1, enpassent[1]))       
-        switchPos((enpassent[0]-1, enpassent[1]), (position[0], position[1]), tmpBoard)
+    if position[0] > 0 and position[1] < 7 and game.board[position[0]-1][position[1]+1].islower():
+        switchPos((position[0], position[1]), (position[0]-1, position[1]+1), game)
+        if not isWKingChecked(game, 0):
+            validMoves.append((position[0]-1, position[1]+1))  
+        switchPos((position[0]-1, position[1]+1), (position[0], position[1]), game)
+    if not game.enpassant == (-1, -1, -1) and position[0] == game.enpassant[0] and (position[1] - 1 == game.enpassant[1] or position[1] + 1 == game.enpassant[1]) and game.enpassant[2] == 0:
+        switchPos((position[0], position[1]), (game.enpassant[0]-1, game.enpassant[1]), game)
+        if not isWKingChecked(game, 0):
+            validMoves.append((game.enpassant[0]-1, game.enpassant[1]))       
+        switchPos((game.enpassant[0]-1, game.enpassant[1]), (position[0], position[1]), game)
     return validMoves
 
 
-def getBP(position, tmpBoard):
+def getBP(position, game):
     validMoves = []
 
-    if position[0] < 7 and tmpBoard[position[0]+1][position[1]] == '0':
-        switchPos((position[0], position[1]), (position[0]+1, position[1]), tmpBoard)
-        if not isBKingChecked(tmpBoard, 1):
+    if position[0] < 7 and game.board[position[0]+1][position[1]] == '0':
+        switchPos((position[0], position[1]), (position[0]+1, position[1]), game)
+        if not isBKingChecked(game, 1):
             validMoves.append((position[0]+1, position[1]))
-            if position[0] == 1 and tmpBoard[position[0]+2][position[1]] == '0':
-                switchPos((position[0], position[1]), (position[0]+2, position[1]), tmpBoard)
-                if not isBKingChecked(tmpBoard, 1):
+            if position[0] == 1 and game.board[position[0]+2][position[1]] == '0':
+                switchPos((position[0], position[1]), (position[0]+2, position[1]), game)
+                if not isBKingChecked(game, 1):
                     validMoves.append((position[0]+2, position[1]))
-                switchPos((position[0]+2, position[1]), (position[0], position[1]), tmpBoard)
-        switchPos((position[0]+1, position[1]), (position[0], position[1]), tmpBoard)
+                switchPos((position[0]+2, position[1]), (position[0], position[1]), game)
+        switchPos((position[0]+1, position[1]), (position[0], position[1]), game)
 
-    if position[0] < 7 and position[1] > 0 and not tmpBoard[position[0]+1][position[1]-1].islower() and not tmpBoard[position[0]+1][position[1]-1].isdigit():
-        switchPos((position[0], position[1]), (position[0]+1, position[1]-1), tmpBoard)
-        if not isBKingChecked(tmpBoard, 1):
+    if position[0] < 7 and position[1] > 0 and not game.board[position[0]+1][position[1]-1].islower() and not game.board[position[0]+1][position[1]-1].isdigit():
+        switchPos((position[0], position[1]), (position[0]+1, position[1]-1), game)
+        if not isBKingChecked(game, 1):
             validMoves.append((position[0]+1, position[1]-1))       
-        switchPos((position[0]+1, position[1]-1), (position[0], position[1]),  tmpBoard)
+        switchPos((position[0]+1, position[1]-1), (position[0], position[1]),  game)
 
-    if position[0] < 7 and position[1] < 7 and not tmpBoard[position[0]+1][position[1]+1].islower() and not tmpBoard[position[0]+1][position[1]+1].isdigit():
-        switchPos((position[0], position[1]), (position[0]+1, position[1]+1), tmpBoard)
-        if not isBKingChecked(tmpBoard, 1):
+    if position[0] < 7 and position[1] < 7 and not game.board[position[0]+1][position[1]+1].islower() and not game.board[position[0]+1][position[1]+1].isdigit():
+        switchPos((position[0], position[1]), (position[0]+1, position[1]+1), game)
+        if not isBKingChecked(game, 1):
             validMoves.append((position[0]+1, position[1]+1))  
-        switchPos((position[0]+1, position[1]+1), (position[0], position[1]), tmpBoard)
-    if not enpassent == (-1, -1) and position[0] == enpassent[0] and (position[1] - 1 == enpassent[1] or position[1] + 1 == enpassent[1]):
-        switchPos((position[0], position[1]), (enpassent[0]+1, enpassent[1]), tmpBoard)
-        if not isBKingChecked(tmpBoard, 1):
-            validMoves.append((enpassent[0]+1, enpassent[1]))       
-        switchPos((enpassent[0]+1, enpassent[1]), (position[0], position[1]), tmpBoard)
+        switchPos((position[0]+1, position[1]+1), (position[0], position[1]), game)
+    if not game.enpassant == (-1, -1, -1) and position[0] == game.enpassant[0] and (position[1] - 1 == game.enpassant[1] or position[1] + 1 == game.enpassant[1]) and game.enpassant[2] == 1:
+        switchPos((position[0], position[1]), (game.enpassant[0]+1, game.enpassant[1]), game)
+        if not isBKingChecked(game, 1):
+            validMoves.append((game.enpassant[0]+1, game.enpassant[1]))       
+        switchPos((game.enpassant[0]+1, game.enpassant[1]), (position[0], position[1]), game)
     return validMoves
 
-def getWB(position, tmpBoard):
+def getWB(position, game):
     validMoves = []
     i, j = position[0], position[1]
 
     for k in range (1, min(i, j)+1):
-        if not board[i-k][j-k].islower() and not board[i-k][j-k].isdigit():
+        if not game.board[i-k][j-k].islower() and not game.board[i-k][j-k].isdigit():
             break        
-        switchPos((position[0], position[1]), (position[0]-k, position[1]-k), tmpBoard)
-        if not isWKingChecked(tmpBoard, 0):
+        switchPos((position[0], position[1]), (position[0]-k, position[1]-k), game)
+        if not isWKingChecked(game, 0):
             validMoves.append((position[0]-k, position[1]-k))
-        switchPos((position[0]-k, position[1]-k), (position[0], position[1]), tmpBoard)
-        if board[i-k][j-k].islower():
+        switchPos((position[0]-k, position[1]-k), (position[0], position[1]), game)
+        if game.board[i-k][j-k].islower():
             break
 
     for k in range (1, min(i, (7-j))+1):
-        if not board[i-k][j+k].islower() and not board[i-k][j+k].isdigit():
+        if not game.board[i-k][j+k].islower() and not game.board[i-k][j+k].isdigit():
             break  
-        switchPos((position[0], position[1]), (position[0]-k, position[1]+k), tmpBoard)
-        if not isWKingChecked(tmpBoard, 0):
+        switchPos((position[0], position[1]), (position[0]-k, position[1]+k), game)
+        if not isWKingChecked(game, 0):
             validMoves.append((position[0]-k, position[1]+k))
-        switchPos((position[0]-k, position[1]+k), (position[0], position[1]), tmpBoard)
-        if board[i-k][j+k].islower():
+        switchPos((position[0]-k, position[1]+k), (position[0], position[1]), game)
+        if game.board[i-k][j+k].islower():
             break
         
     for k in range (1, min((7-i), j)+1):
-        if not board[i+k][j-k].islower() and not board[i+k][j-k].isdigit():
+        if not game.board[i+k][j-k].islower() and not game.board[i+k][j-k].isdigit():
             break  
-        switchPos((position[0], position[1]), (position[0]+k, position[1]-k), tmpBoard)
-        if not isWKingChecked(tmpBoard, 0):
+        switchPos((position[0], position[1]), (position[0]+k, position[1]-k), game)
+        if not isWKingChecked(game, 0):
             validMoves.append((position[0]+k, position[1]-k))
-        switchPos((position[0]+k, position[1]-k), (position[0], position[1]), tmpBoard)
-        if board[i+k][j-k].islower():
+        switchPos((position[0]+k, position[1]-k), (position[0], position[1]), game)
+        if game.board[i+k][j-k].islower():
             break
         
     for k in range (1, min((7-i), (7-j))+1):
-        if not board[i+k][j+k].islower() and not board[i+k][j+k].isdigit():
+        if not game.board[i+k][j+k].islower() and not game.board[i+k][j+k].isdigit():
             break  
-        switchPos((position[0], position[1]), (position[0]+k, position[1]+k), tmpBoard)
-        if not isWKingChecked(tmpBoard, 0):
+        switchPos((position[0], position[1]), (position[0]+k, position[1]+k), game)
+        if not isWKingChecked(game, 0):
             validMoves.append((position[0]+k, position[1]+k))
-        switchPos((position[0]+k, position[1]+k), (position[0], position[1]), tmpBoard)
-        if board[i+k][j+k].islower():
+        switchPos((position[0]+k, position[1]+k), (position[0], position[1]), game)
+        if game.board[i+k][j+k].islower():
             break
         
     return validMoves
 
-def getBB(position, tmpBoard):
+def getBB(position, game):
     validMoves = []
     i, j = position[0], position[1]
 
     for k in range (1, min(i, j)+1):
-        if board[i-k][j-k].islower():
+        if game.board[i-k][j-k].islower():
             break  
-        switchPos((position[0], position[1]), (position[0]-k, position[1]-k), tmpBoard)
-        if not isBKingChecked(tmpBoard, 1):
+        switchPos((position[0], position[1]), (position[0]-k, position[1]-k), game)
+        if not isBKingChecked(game, 1):
             validMoves.append((position[0]-k, position[1]-k))
-        switchPos((position[0]-k, position[1]-k), (position[0], position[1]), tmpBoard)
-        if not board[i-k][j-k].islower() and not board[i-k][j-k].isdigit():
+        switchPos((position[0]-k, position[1]-k), (position[0], position[1]), game)
+        if not game.board[i-k][j-k].islower() and not game.board[i-k][j-k].isdigit():
             break
         
     for k in range (1, min(i, (7-j))+1):
-        if board[i-k][j+k].islower():
+        if game.board[i-k][j+k].islower():
             break  
-        switchPos((position[0], position[1]), (position[0]-k, position[1]+k), tmpBoard)
-        if not isBKingChecked(tmpBoard, 1):
+        switchPos((position[0], position[1]), (position[0]-k, position[1]+k), game)
+        if not isBKingChecked(game, 1):
             validMoves.append((position[0]-k, position[1]+k))
-        switchPos((position[0]-k, position[1]+k), (position[0], position[1]), tmpBoard)
-        if not board[i-k][j+k].isdigit() and not board[i-k][j+k].islower():
+        switchPos((position[0]-k, position[1]+k), (position[0], position[1]), game)
+        if not game.board[i-k][j+k].isdigit() and not game.board[i-k][j+k].islower():
             break
         
     for k in range (1, min((7-i), j)+1):
-        if board[i+k][j-k].islower():
+        if game.board[i+k][j-k].islower():
             break  
-        switchPos((position[0], position[1]), (position[0]+k, position[1]-k), tmpBoard)
-        if not isBKingChecked(tmpBoard, 1):
+        switchPos((position[0], position[1]), (position[0]+k, position[1]-k), game)
+        if not isBKingChecked(game, 1):
             validMoves.append((position[0]+k, position[1]-k))
-        switchPos((position[0]+k, position[1]-k), (position[0], position[1]), tmpBoard)
-        if not board[i+k][j-k].isdigit() and not board[i+k][j-k].islower():
+        switchPos((position[0]+k, position[1]-k), (position[0], position[1]), game)
+        if not game.board[i+k][j-k].isdigit() and not game.board[i+k][j-k].islower():
             break
         
 
     for k in range (1, min((7-i), (7-j))+1):
-        if board[i+k][j+k].islower():
+        if game.board[i+k][j+k].islower():
             break  
-        switchPos((position[0], position[1]), (position[0]+k, position[1]+k), tmpBoard)
-        if not isBKingChecked(tmpBoard, 1):
+        switchPos((position[0], position[1]), (position[0]+k, position[1]+k), game)
+        if not isBKingChecked(game, 1):
             validMoves.append((position[0]+k, position[1]+k))
-        switchPos((position[0]+k, position[1]+k), (position[0], position[1]), tmpBoard)
-        if not board[i+k][j+k].isdigit() and not board[i+k][j+k].islower():
+        switchPos((position[0]+k, position[1]+k), (position[0], position[1]), game)
+        if not game.board[i+k][j+k].isdigit() and not game.board[i+k][j+k].islower():
             break
         
     return validMoves
 
-def getWN(position, tmpBoard):
+def getWN(position, game):
     validMoves = []
     i,j = position[0], position[1]
     if i > 1:
-        if j > 0 and (board[position[0]-2][position[1]-1].islower() or board[position[0]-2][position[1]-1].isdigit()):
-            switchPos((position[0], position[1]), (position[0]-2, position[1]-1), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+        if j > 0 and(game.board[position[0]-2][position[1]-1].islower() or game.board[position[0]-2][position[1]-1].isdigit()):
+            switchPos((position[0], position[1]), (position[0]-2, position[1]-1), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0]-2, position[1]-1))
-            switchPos((position[0]-2, position[1]-1),(position[0], position[1]), tmpBoard)
-        if j < 7 and (board[position[0]-2][position[1]+1].islower() or board[position[0]-2][position[1]+1].isdigit()):
-            switchPos((position[0], position[1]), (position[0]-2, position[1]+1), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+            switchPos((position[0]-2, position[1]-1),(position[0], position[1]), game)
+        if j < 7 and(game.board[position[0]-2][position[1]+1].islower() or game.board[position[0]-2][position[1]+1].isdigit()):
+            switchPos((position[0], position[1]), (position[0]-2, position[1]+1), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0]-2, position[1]+1))
-            switchPos((position[0]-2, position[1]+1), (position[0], position[1]), tmpBoard)
+            switchPos((position[0]-2, position[1]+1), (position[0], position[1]), game)
     if i > 0:
-        if j > 1 and (board[position[0]-1][position[1]-2].islower() or board[position[0]-1][position[1]-2].isdigit()):
-            switchPos((position[0], position[1]), (position[0]-1, position[1]-2), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+        if j > 1 and(game.board[position[0]-1][position[1]-2].islower() or game.board[position[0]-1][position[1]-2].isdigit()):
+            switchPos((position[0], position[1]), (position[0]-1, position[1]-2), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0]-1, position[1]-2))
-            switchPos((position[0]-1, position[1]-2), (position[0], position[1]), tmpBoard)
-        if j < 6 and (board[position[0]-1][position[1]+2].islower() or board[position[0]-1][position[1]+2].isdigit()):
-            switchPos((position[0], position[1]), (position[0]-1, position[1]+2), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+            switchPos((position[0]-1, position[1]-2), (position[0], position[1]), game)
+        if j < 6 and(game.board[position[0]-1][position[1]+2].islower() or game.board[position[0]-1][position[1]+2].isdigit()):
+            switchPos((position[0], position[1]), (position[0]-1, position[1]+2), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0]-1, position[1]+2))
-            switchPos((position[0]-1, position[1]+2), (position[0], position[1]), tmpBoard)
+            switchPos((position[0]-1, position[1]+2), (position[0], position[1]), game)
     if i < 6:
-        if j > 0 and (board[position[0]+2][position[1]-1].islower() or board[position[0]+2][position[1]-1].isdigit()):
-            switchPos((position[0], position[1]), (position[0]+2, position[1]-1), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+        if j > 0 and(game.board[position[0]+2][position[1]-1].islower() or game.board[position[0]+2][position[1]-1].isdigit()):
+            switchPos((position[0], position[1]), (position[0]+2, position[1]-1), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0]+2, position[1]-1))
-            switchPos((position[0]+2, position[1]-1), (position[0], position[1]), tmpBoard)
-        if j < 7 and (board[position[0]+2][position[1]+1].islower() or board[position[0]+2][position[1]+1].isdigit()):
-            switchPos((position[0], position[1]), (position[0]+2, position[1]+1), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+            switchPos((position[0]+2, position[1]-1), (position[0], position[1]), game)
+        if j < 7 and(game.board[position[0]+2][position[1]+1].islower() or game.board[position[0]+2][position[1]+1].isdigit()):
+            switchPos((position[0], position[1]), (position[0]+2, position[1]+1), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0]+2, position[1]+1))
-            switchPos((position[0]+2, position[1]+1), (position[0], position[1]), tmpBoard)
+            switchPos((position[0]+2, position[1]+1), (position[0], position[1]), game)
     if i < 7:
-        if j > 1  and (board[position[0]+1][position[1]-2].islower() or board[position[0]+1][position[1]-2].isdigit()):
-            switchPos((position[0], position[1]), (position[0]+1, position[1]-2), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+        if j > 1  and(game.board[position[0]+1][position[1]-2].islower() or game.board[position[0]+1][position[1]-2].isdigit()):
+            switchPos((position[0], position[1]), (position[0]+1, position[1]-2), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0]+1, position[1]-2))
-            switchPos((position[0]+1, position[1]-2), (position[0], position[1]), tmpBoard)
-        if j < 6 and (board[position[0]+1][position[1]+2].islower() or board[position[0]+1][position[1]+2].isdigit()):
-            switchPos((position[0], position[1]), (position[0]+1, position[1]+2), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+            switchPos((position[0]+1, position[1]-2), (position[0], position[1]), game)
+        if j < 6 and(game.board[position[0]+1][position[1]+2].islower() or game.board[position[0]+1][position[1]+2].isdigit()):
+            switchPos((position[0], position[1]), (position[0]+1, position[1]+2), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0]+1, position[1]+2))
-            switchPos((position[0]+1, position[1]+2), (position[0], position[1]), tmpBoard)
+            switchPos((position[0]+1, position[1]+2), (position[0], position[1]), game)
 
     return validMoves
 
-def getBN(position, tmpBoard):
+def getBN(position, game):
     validMoves = []
     i,j = position[0], position[1]
     if i > 1:
-        if j > 0 and (not board[position[0]-2][position[1]-1].islower()):
-            switchPos((position[0], position[1]), (position[0]-2, position[1]-1), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+        if j > 0 and (not game.board[position[0]-2][position[1]-1].islower()):
+            switchPos((position[0], position[1]), (position[0]-2, position[1]-1), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0]-2, position[1]-1))
-            switchPos((position[0]-2, position[1]-1), (position[0], position[1]), tmpBoard)
-        if j < 7 and (not board[position[0]-2][position[1]+1].islower()):
-            switchPos((position[0], position[1]), (position[0]-2, position[1]+1), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+            switchPos((position[0]-2, position[1]-1), (position[0], position[1]), game)
+        if j < 7 and (not game.board[position[0]-2][position[1]+1].islower()):
+            switchPos((position[0], position[1]), (position[0]-2, position[1]+1), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0]-2, position[1]+1))
-            switchPos((position[0]-2, position[1]+1), (position[0], position[1]), tmpBoard)
+            switchPos((position[0]-2, position[1]+1), (position[0], position[1]), game)
     if i > 0:
-        if j > 1 and (not board[position[0]-1][position[1]-2].islower()):
-            switchPos((position[0], position[1]), (position[0]-1, position[1]-2), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+        if j > 1 and (not game.board[position[0]-1][position[1]-2].islower()):
+            switchPos((position[0], position[1]), (position[0]-1, position[1]-2), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0]-1, position[1]-2))
-            switchPos((position[0]-1, position[1]-2), (position[0], position[1]), tmpBoard)
-        if j < 6 and (not board[position[0]-1][position[1]+2].islower()):
-            switchPos((position[0], position[1]), (position[0]-1, position[1]+2), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+            switchPos((position[0]-1, position[1]-2), (position[0], position[1]), game)
+        if j < 6 and (not game.board[position[0]-1][position[1]+2].islower()):
+            switchPos((position[0], position[1]), (position[0]-1, position[1]+2), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0]-1, position[1]+2))
-            switchPos((position[0]-1, position[1]+2), (position[0], position[1]), tmpBoard)
+            switchPos((position[0]-1, position[1]+2), (position[0], position[1]), game)
     if i < 6:
-        if j > 0 and (not board[position[0]+2][position[1]-1].islower()):
-            switchPos((position[0], position[1]), (position[0]+2, position[1]-1), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+        if j > 0 and (not game.board[position[0]+2][position[1]-1].islower()):
+            switchPos((position[0], position[1]), (position[0]+2, position[1]-1), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0]+2, position[1]-1))
-            switchPos((position[0]+2, position[1]-1), (position[0], position[1]), tmpBoard)
-        if j < 7 and (not board[position[0]+2][position[1]+1].islower()):
-            switchPos((position[0], position[1]), (position[0]+2, position[1]+1), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+            switchPos((position[0]+2, position[1]-1), (position[0], position[1]), game)
+        if j < 7 and (not game.board[position[0]+2][position[1]+1].islower()):
+            switchPos((position[0], position[1]), (position[0]+2, position[1]+1), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0]+2, position[1]+1))
-            switchPos((position[0]+2, position[1]+1), (position[0], position[1]), tmpBoard)
+            switchPos((position[0]+2, position[1]+1), (position[0], position[1]), game)
     if i < 7:
-        if j > 1 and (not board[position[0]+1][position[1]-2].islower()):
-            switchPos((position[0], position[1]), (position[0]+1, position[1]-2), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+        if j > 1 and (not game.board[position[0]+1][position[1]-2].islower()):
+            switchPos((position[0], position[1]), (position[0]+1, position[1]-2), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0]+1, position[1]-2))
-            switchPos((position[0]+1, position[1]-2), (position[0], position[1]), tmpBoard)
-        if j < 6 and (not board[position[0]+1][position[1]+2].islower()):
-            switchPos((position[0], position[1]), (position[0]+1, position[1]+2), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+            switchPos((position[0]+1, position[1]-2), (position[0], position[1]), game)
+        if j < 6 and (not game.board[position[0]+1][position[1]+2].islower()):
+            switchPos((position[0], position[1]), (position[0]+1, position[1]+2), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0]+1, position[1]+2))
-            switchPos((position[0]+1, position[1]+2), (position[0], position[1]), tmpBoard)
+            switchPos((position[0]+1, position[1]+2), (position[0], position[1]), game)
     return validMoves
 
-def getWR(position, tmpBoard):
+def getWR(position, game):
     validMoves = []
     i,j = position[0], position[1]
     for k in range (i-1, -1, -1):
-        if not board[k][j].islower() and not board[k][j].isdigit():
+        if not game.board[k][j].islower() and not game.board[k][j].isdigit():
             break
-        switchPos((position[0], position[1]), (k, position[1]), tmpBoard)
-        if not isWKingChecked(tmpBoard, 0):
+        switchPos((position[0], position[1]), (k, position[1]), game)
+        if not isWKingChecked(game, 0):
             validMoves.append((k, position[1]))
-        switchPos((k, position[1]), (position[0], position[1]), tmpBoard)
-        if board[k][j].islower():
+        switchPos((k, position[1]), (position[0], position[1]), game)
+        if game.board[k][j].islower():
             break
         
     
     for k in range (i+1, 8):
-        if not board[k][j].islower() and not board[k][j].isdigit():
+        if not game.board[k][j].islower() and not game.board[k][j].isdigit():
             break
-        switchPos((position[0], position[1]), (k, position[1]), tmpBoard)
-        if not isWKingChecked(tmpBoard, 0):
+        switchPos((position[0], position[1]), (k, position[1]), game)
+        if not isWKingChecked(game, 0):
             validMoves.append((k, position[1]))
-        switchPos((k, position[1]), (position[0], position[1]), tmpBoard)
-        if board[k][j].islower():
+        switchPos((k, position[1]), (position[0], position[1]), game)
+        if game.board[k][j].islower():
             break
         
 
     for k in range (j-1, -1, -1):
-        if not board[i][k].islower() and not board[i][k].isdigit():
+        if not game.board[i][k].islower() and not game.board[i][k].isdigit():
             break
-        switchPos((position[0], position[1]), (position[0], k), tmpBoard)
-        if not isWKingChecked(tmpBoard, 0):
+        switchPos((position[0], position[1]), (position[0], k), game)
+        if not isWKingChecked(game, 0):
             validMoves.append((position[0], k))
-        switchPos((position[0], k), (position[0], position[1]),  tmpBoard)
-        if board[i][k].islower():
+        switchPos((position[0], k), (position[0], position[1]),  game)
+        if game.board[i][k].islower():
             break
         
     
     for k in range (j+1, 8):
-        if not board[i][k].islower() and not board[i][k].isdigit():
+        if not game.board[i][k].islower() and not game.board[i][k].isdigit():
             break
-        switchPos((position[0], position[1]), (position[0], k), tmpBoard)
-        if not isWKingChecked(tmpBoard, 0):
+        switchPos((position[0], position[1]), (position[0], k), game)
+        if not isWKingChecked(game, 0):
             validMoves.append((position[0], k))
-        switchPos((position[0], k), (position[0], position[1]), tmpBoard)
-        if board[i][k].islower():
+        switchPos((position[0], k), (position[0], position[1]), game)
+        if game.board[i][k].islower():
             break
         
 
     return validMoves
 
-def getBR(position, tmpBoard):
+def getBR(position, game):
     validMoves = []
     i,j = position[0], position[1]
     for k in range (i-1, -1, -1):
-        if board[k][j].islower():
+        if game.board[k][j].islower():
             break
-        switchPos((position[0], position[1]), (k, position[1]), tmpBoard)
-        if not isBKingChecked(tmpBoard, 1):
+        switchPos((position[0], position[1]), (k, position[1]), game)
+        if not isBKingChecked(game, 1):
             validMoves.append((k, position[1]))
-        switchPos((k, position[1]), (position[0], position[1]), tmpBoard)
-        if not board[k][j].islower() and not board[k][j].isdigit():
+        switchPos((k, position[1]), (position[0], position[1]), game)
+        if not game.board[k][j].islower() and not game.board[k][j].isdigit():
             break
         
     
     for k in range (i+1, 8):
-        if board[k][j].islower():
+        if game.board[k][j].islower():
             break
-        switchPos((position[0], position[1]), (k, position[1]), tmpBoard)
-        if not isBKingChecked(tmpBoard, 1):
+        switchPos((position[0], position[1]), (k, position[1]), game)
+        if not isBKingChecked(game, 1):
             validMoves.append((k, position[1]))
-        switchPos((k, position[1]), (position[0], position[1]), tmpBoard)
-        if not board[k][j].islower() and not board[k][j].isdigit():
+        switchPos((k, position[1]), (position[0], position[1]), game)
+        if not game.board[k][j].islower() and not game.board[k][j].isdigit():
             break
         
 
     for k in range (j-1, -1, -1):
-        if board[i][k].islower():
+        if game.board[i][k].islower():
             break
-        switchPos((position[0], position[1]), (position[0], k), tmpBoard)
-        if not isBKingChecked(tmpBoard, 1):
+        switchPos((position[0], position[1]), (position[0], k), game)
+        if not isBKingChecked(game, 1):
             validMoves.append((position[0], k))
-        switchPos((position[0], k), (position[0], position[1]), tmpBoard)
-        if not board[i][k].islower() and not board[i][k].isdigit():
+        switchPos((position[0], k), (position[0], position[1]), game)
+        if not game.board[i][k].islower() and not game.board[i][k].isdigit():
             break
         
     for k in range (j+1, 8):
-        if board[i][k].islower():
+        if game.board[i][k].islower():
             break
-        switchPos((position[0], position[1]), (position[0], k), tmpBoard)
-        if not isBKingChecked(tmpBoard, 1):
+        switchPos((position[0], position[1]), (position[0], k), game)
+        if not isBKingChecked(game, 1):
             validMoves.append((position[0], k))
-        switchPos((position[0], k), (position[0], position[1]), tmpBoard)
-        if not board[i][k].islower() and not board[i][k].isdigit():
+        switchPos((position[0], k), (position[0], position[1]), game)
+        if not game.board[i][k].islower() and not game.board[i][k].isdigit():
             break
         
     return validMoves
 
-def getWQ(position, tmpBoard):
+def getWQ(position, game):
     validMoves = []
-    validMoves.extend(getWB(position, tmpBoard))
-    validMoves.extend(getWR(position, tmpBoard))
+    validMoves.extend(getWB(position, game))
+    validMoves.extend(getWR(position, game))
     return validMoves
 
-def getBQ(position, tmpBoard):
+def getBQ(position, game):
     validMoves = []
-    validMoves.extend(getBB(position, tmpBoard))
-    validMoves.extend(getBR(position, tmpBoard))
+    validMoves.extend(getBB(position, game))
+    validMoves.extend(getBR(position, game))
     return validMoves
 
-def getWK(position, tmpBoard):
+def getWK(position, game):
     validMoves = []
 
     if position[0] > 0:
-        if board[position[0]-1][position[1]].islower() or board[position[0]-1][position[1]].isdigit():
-            switchPos((position[0], position[1]), (position[0]-1, position[1]), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+        if game.board[position[0]-1][position[1]].islower() or game.board[position[0]-1][position[1]].isdigit():
+            switchPos((position[0], position[1]), (position[0]-1, position[1]), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0]-1, position[1]))    
-            switchPos((position[0]-1, position[1]), (position[0], position[1]), tmpBoard)
-        if position[1] > 0 and (board[position[0]-1][position[1]-1].islower() or board[position[0]-1][position[1]-1].isdigit()):
-            switchPos((position[0], position[1]), (position[0]-1, position[1]-1), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+            switchPos((position[0]-1, position[1]), (position[0], position[1]), game)
+        if position[1] > 0 and(game.board[position[0]-1][position[1]-1].islower() or game.board[position[0]-1][position[1]-1].isdigit()):
+            switchPos((position[0], position[1]), (position[0]-1, position[1]-1), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0]-1, position[1]-1))           
-            switchPos((position[0]-1, position[1]-1), (position[0], position[1]), tmpBoard)
-        if position[1] < 7 and (board[position[0]-1][position[1]+1].islower() or board[position[0]-1][position[1]+1].isdigit()):
-            switchPos((position[0], position[1]), (position[0]-1, position[1]+1), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+            switchPos((position[0]-1, position[1]-1), (position[0], position[1]), game)
+        if position[1] < 7 and(game.board[position[0]-1][position[1]+1].islower() or game.board[position[0]-1][position[1]+1].isdigit()):
+            switchPos((position[0], position[1]), (position[0]-1, position[1]+1), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0]-1, position[1]+1))  
-            switchPos((position[0]-1, position[1]+1), (position[0], position[1]), tmpBoard)
+            switchPos((position[0]-1, position[1]+1), (position[0], position[1]), game)
 
     if position[0] < 7:
-        if board[position[0]+1][position[1]].islower() or board[position[0]+1][position[1]].isdigit():
-            switchPos((position[0], position[1]), (position[0]+1, position[1]), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+        if game.board[position[0]+1][position[1]].islower() or game.board[position[0]+1][position[1]].isdigit():
+            switchPos((position[0], position[1]), (position[0]+1, position[1]), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0]+1, position[1]))   
-            switchPos((position[0]+1, position[1]), (position[0], position[1]), tmpBoard)
-        if position[1] > 0 and (board[position[0]+1][position[1]-1].islower() or board[position[0]+1][position[1]-1].isdigit()):
-            switchPos((position[0], position[1]), (position[0]-1, position[1]-1), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+            switchPos((position[0]+1, position[1]), (position[0], position[1]), game)
+        if position[1] > 0 and(game.board[position[0]+1][position[1]-1].islower() or game.board[position[0]+1][position[1]-1].isdigit()):
+            switchPos((position[0], position[1]), (position[0]-1, position[1]-1), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0]+1, position[1]-1))      
-            switchPos((position[0]-1, position[1]-1), (position[0], position[1]), tmpBoard)     
-        if position[1] < 7 and (board[position[0]+1][position[1]+1].islower() or board[position[0]+1][position[1]+1].isdigit()):
-            switchPos((position[0], position[1]), (position[0]-1, position[1]+1), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+            switchPos((position[0]-1, position[1]-1), (position[0], position[1]), game)     
+        if position[1] < 7 and(game.board[position[0]+1][position[1]+1].islower() or game.board[position[0]+1][position[1]+1].isdigit()):
+            switchPos((position[0], position[1]), (position[0]-1, position[1]+1), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0]+1, position[1]+1))  
-            switchPos((position[0]-1, position[1]+1), (position[0], position[1]), tmpBoard)
+            switchPos((position[0]-1, position[1]+1), (position[0], position[1]), game)
     if position[1] > 0:
-        if board[position[0]][position[1]-1].islower() or board[position[0]][position[1]-1].isdigit():
-            switchPos((position[0], position[1]), (position[0], position[1]-1), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+        if game.board[position[0]][position[1]-1].islower() or game.board[position[0]][position[1]-1].isdigit():
+            switchPos((position[0], position[1]), (position[0], position[1]-1), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0], position[1]-1))      
-            switchPos((position[0], position[1]-1), (position[0], position[1]), tmpBoard)      
+            switchPos((position[0], position[1]-1), (position[0], position[1]), game)      
     if position[1] < 7:
-        if board[position[0]][position[1]+1].islower() or board[position[0]][position[1]+1].isdigit():
-            switchPos((position[0], position[1]), (position[0], position[1]+1), tmpBoard)
-            if not isWKingChecked(tmpBoard, 0):
+        if game.board[position[0]][position[1]+1].islower() or game.board[position[0]][position[1]+1].isdigit():
+            switchPos((position[0], position[1]), (position[0], position[1]+1), game)
+            if not isWKingChecked(game, 0):
                 validMoves.append((position[0], position[1]+1)) 
-            switchPos((position[0], position[1]+1), (position[0], position[1]), tmpBoard)   
+            switchPos((position[0], position[1]+1), (position[0], position[1]), game)   
     return validMoves
 
-def getBK(position, tmpBoard):
+def getBK(position, game):
     validMoves = []
 
     if position[0] > 0:
-        if not board[position[0]-1][position[1]].islower():
-            switchPos((position[0], position[1]), (position[0]-1, position[1]), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+        if not game.board[position[0]-1][position[1]].islower():
+            switchPos((position[0], position[1]), (position[0]-1, position[1]), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0]-1, position[1]))   
-            switchPos((position[0]-1, position[1]), (position[0], position[1]), tmpBoard) 
-        if position[1] > 0 and not board[position[0]-1][position[1]-1].islower():
-            switchPos((position[0], position[1]), (position[0]-1, position[1]-1), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+            switchPos((position[0]-1, position[1]), (position[0], position[1]), game) 
+        if position[1] > 0 and not game.board[position[0]-1][position[1]-1].islower():
+            switchPos((position[0], position[1]), (position[0]-1, position[1]-1), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0]-1, position[1]-1))    
-            switchPos((position[0]-1, position[1]-1), (position[0], position[1]), tmpBoard)       
-        if position[1] < 7 and not board[position[0]-1][position[1]+1].islower():
-            switchPos((position[0], position[1]), (position[0]-1, position[1]+1), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+            switchPos((position[0]-1, position[1]-1), (position[0], position[1]), game)       
+        if position[1] < 7 and not game.board[position[0]-1][position[1]+1].islower():
+            switchPos((position[0], position[1]), (position[0]-1, position[1]+1), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0]-1, position[1]+1))  
-            switchPos((position[0]-1, position[1]+1), (position[0], position[1]), tmpBoard)
+            switchPos((position[0]-1, position[1]+1), (position[0], position[1]), game)
     if position[0] < 7:
-        if not board[position[0]+1][position[1]].islower():
-            switchPos((position[0], position[1]), (position[0]+1, position[1]), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+        if not game.board[position[0]+1][position[1]].islower():
+            switchPos((position[0], position[1]), (position[0]+1, position[1]), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0]+1, position[1]))   
-            switchPos((position[0]+1, position[1]), (position[0], position[1]), tmpBoard)
-        if position[1] > 0 and not board[position[0]+1][position[1]-1].islower():
-            switchPos((position[0], position[1]), (position[0]+1, position[1]-1), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+            switchPos((position[0]+1, position[1]), (position[0], position[1]), game)
+        if position[1] > 0 and not game.board[position[0]+1][position[1]-1].islower():
+            switchPos((position[0], position[1]), (position[0]+1, position[1]-1), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0]+1, position[1]-1))      
-            switchPos((position[0]+1, position[1]-1), (position[0], position[1]), tmpBoard)     
-        if position[1] < 7 and not board[position[0]+1][position[1]+1].islower():
-            switchPos((position[0], position[1]), (position[0]+1, position[1]+1), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+            switchPos((position[0]+1, position[1]-1), (position[0], position[1]), game)     
+        if position[1] < 7 and not game.board[position[0]+1][position[1]+1].islower():
+            switchPos((position[0], position[1]), (position[0]+1, position[1]+1), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0]+1, position[1]+1))  
-            switchPos((position[0]+1, position[1]+1), (position[0], position[1]), tmpBoard)
+            switchPos((position[0]+1, position[1]+1), (position[0], position[1]), game)
 
     if position[1] > 0:
-        if not board[position[0]][position[1]-1].islower():
-            switchPos((position[0], position[1]), (position[0], position[1]-1), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+        if not game.board[position[0]][position[1]-1].islower():
+            switchPos((position[0], position[1]), (position[0], position[1]-1), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0], position[1]-1))     
-            switchPos((position[0], position[1]-1), (position[0], position[1]), tmpBoard)       
+            switchPos((position[0], position[1]-1), (position[0], position[1]), game)       
     if position[1] < 7:
-        if not board[position[0]][position[1]+1].islower():
-            switchPos((position[0], position[1]), (position[0], position[1]+1), tmpBoard)
-            if not isBKingChecked(tmpBoard, 1):
+        if not game.board[position[0]][position[1]+1].islower():
+            switchPos((position[0], position[1]), (position[0], position[1]+1), game)
+            if not isBKingChecked(game, 1):
                 validMoves.append((position[0], position[1]+1))    
-            switchPos((position[0], position[1]+1), (position[0], position[1]), tmpBoard)
+            switchPos((position[0], position[1]+1), (position[0], position[1]), game)
     return validMoves
 
-def getMoves(position, tmpBoard):
-    tmp = tmpBoard[position[0]][position[1]]
+def getMoves(position, game):
+    tmp = game.board[position[0]][position[1]]
     if tmp == 'p':
-        return getBP(position, tmpBoard)
+        return getBP(position, game)
     elif tmp == 'P':
-        return getWP(position, tmpBoard)
+        return getWP(position, game)
     elif tmp == 'n':
-        return getBN(position, tmpBoard)
+        return getBN(position, game)
     elif tmp == 'N':
-        return getWN(position, tmpBoard)
+        return getWN(position, game)
     elif tmp == 'b':
-        return getBB(position, tmpBoard)
+        return getBB(position, game)
     elif tmp == 'B':
-        return getWB(position, tmpBoard)
+        return getWB(position, game)
     elif tmp == 'r':
-        return getBR(position, tmpBoard)
+        return getBR(position, game)
     elif tmp == 'R':
-        return getWR(position, tmpBoard)
+        return getWR(position, game)
     elif tmp == 'q':
-        return getBQ(position, tmpBoard)
+        return getBQ(position, game)
     elif tmp == 'Q':
-        return getWQ(position, tmpBoard)
+        return getWQ(position, game)
     elif tmp == 'k':
-        return getBK(position, tmpBoard)
+        return getBK(position, game)
     elif tmp == 'K':
-        return getWK(position, tmpBoard)
+        return getWK(position, game)
     return

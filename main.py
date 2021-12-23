@@ -1,51 +1,52 @@
-from constants import *
-from gui import *
+from Board_class import Game
+from gui import draw_entire_board
+from gui import pygame
+from gui import select
+from gui import moveSelected
 
-def isNotSame(selected, position):
-    if board[position[0]][position[1]].isdigit():
+def isNotSame(game, selected, position):
+    if game.board[position[0]][position[1]].isdigit():
         return True
-    if board[position[0]][position[1]].islower() == board[selected[0]][selected[1]].islower():
+    if game.board[position[0]][position[1]].islower() == board[selected[0]][selected[1]].islower():
         return False
     return True
 
-def switchTurn():
-    global turn
-    if turn:
-        turn = False
+def switchTurn(game):
+    if game.turn:
+        game.turn = False
     else:
-        turn = True
-def controller(mouseButton, position):
-    global selected
-    global highlightMode
+        game.turn = True
+def controller(game, mouseButton, position):
     if mouseButton == 1:
-        highlightMode = False
-        draw_entire_board()
-        if not selected == (-1,-1) and isNotSame(selected, position):
-            flag = moveSelected(selected, position)
-            selected = (-1, -1)
+        game.highlightMode = False
+        draw_entire_board(game)
+        if not game.selected == (-1,-1) and isNotSame(game, game.selected, position):
+            flag = moveSelected(game, game.selected, position)
+            game.selected = (-1, -1)
             if flag:
-                switchTurn()
-        elif selected == position:
-            selected = (-1,-1)
-        elif board[position[0]][position[1]] != '0' and turn == board[position[0]][position[1]].islower():
-            selected = position
-            select(position)
+                switchTurn(game)
+        elif game.selected == position:
+            game.selected = (-1,-1)
+        elif game.board[position[0]][position[1]] != '0' and game.turn == game.board[position[0]][position[1]].islower():
+            game.selected = position
+            select(game, position)
     if mouseButton == 3:
-        if not highlightMode:
-            draw_entire_board()
-            highlightMode = True
-        drawSquare(position[0], position[1], False, True, False)
+        if not game.highlightMode:
+            draw_entire_board(game)
+            game.highlightMode = True
+        drawSquare(game, position[0], position[1], False, True, False)
         pygame.display.update()
         
-def main():
+def main(game):
     running = True
     while running:        
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                controller(event.button, (pygame.mouse.get_pos()[1] // 90, pygame.mouse.get_pos()[0] // 90))
+                controller(game, event.button, (pygame.mouse.get_pos()[1] // 90, pygame.mouse.get_pos()[0] // 90))
             if event.type == pygame.QUIT:
                 running = False
         pygame.time.Clock().tick(60)
 
-draw_entire_board()
-main()
+game = Game()
+draw_entire_board(game)
+main(game)
