@@ -65,7 +65,6 @@ def select(pos):
     moves = getMoves(pos, board)
     for move in moves:
         drawSquare(move[0], move[1], False, False, True)
-    print (moves)
     pygame.display.update()
 
 def moveSelected(selected, position):

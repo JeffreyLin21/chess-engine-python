@@ -333,45 +333,45 @@ def getWN(position, tmpBoard):
     validMoves = []
     i,j = position[0], position[1]
     if i > 1:
-        if j > 0 and board[position[0]-2][position[1]-1].islower():
+        if j > 0 and (board[position[0]-2][position[1]-1].islower() or board[position[0]-2][position[1]-1].isdigit()):
             switchPos((position[0], position[1]), (position[0]-2, position[1]-1), tmpBoard)
             if not isWKingChecked(tmpBoard, 0):
                 validMoves.append((position[0]-2, position[1]-1))
             switchPos((position[0]-2, position[1]-1),(position[0], position[1]), tmpBoard)
-        if j < 7 and board[position[0]-2][position[1]+1].islower():
+        if j < 7 and (board[position[0]-2][position[1]+1].islower() or board[position[0]-2][position[1]+1].isdigit()):
             switchPos((position[0], position[1]), (position[0]-2, position[1]+1), tmpBoard)
             if not isWKingChecked(tmpBoard, 0):
                 validMoves.append((position[0]-2, position[1]+1))
             switchPos((position[0]-2, position[1]+1), (position[0], position[1]), tmpBoard)
     if i > 0:
-        if j > 1 and board[position[0]-1][position[1]-2].islower():
+        if j > 1 and (board[position[0]-1][position[1]-2].islower() or board[position[0]-1][position[1]-2].isdigit()):
             switchPos((position[0], position[1]), (position[0]-1, position[1]-2), tmpBoard)
             if not isWKingChecked(tmpBoard, 0):
                 validMoves.append((position[0]-1, position[1]-2))
             switchPos((position[0]-1, position[1]-2), (position[0], position[1]), tmpBoard)
-        if j < 6 and board[position[0]-1][position[1]+2].islower():
+        if j < 6 and (board[position[0]-1][position[1]+2].islower() or board[position[0]-1][position[1]+2].isdigit()):
             switchPos((position[0], position[1]), (position[0]-1, position[1]+2), tmpBoard)
             if not isWKingChecked(tmpBoard, 0):
                 validMoves.append((position[0]-1, position[1]+2))
             switchPos((position[0]-1, position[1]+2), (position[0], position[1]), tmpBoard)
-    if i < 5:
-        if j > 0 and board[position[0]+2][position[1]-1].islower():
+    if i < 6:
+        if j > 0 and (board[position[0]+2][position[1]-1].islower() or board[position[0]+2][position[1]-1].isdigit()):
             switchPos((position[0], position[1]), (position[0]+2, position[1]-1), tmpBoard)
             if not isWKingChecked(tmpBoard, 0):
                 validMoves.append((position[0]+2, position[1]-1))
             switchPos((position[0]+2, position[1]-1), (position[0], position[1]), tmpBoard)
-        if j < 7 and board[position[0]+2][position[1]+1].islower():
+        if j < 7 and (board[position[0]+2][position[1]+1].islower() or board[position[0]+2][position[1]+1].isdigit()):
             switchPos((position[0], position[1]), (position[0]+2, position[1]+1), tmpBoard)
             if not isWKingChecked(tmpBoard, 0):
                 validMoves.append((position[0]+2, position[1]+1))
             switchPos((position[0]+2, position[1]+1), (position[0], position[1]), tmpBoard)
-    if i < 6:
-        if j > 1  and board[position[0]+1][position[1]-2].islower():
+    if i < 7:
+        if j > 1  and (board[position[0]+1][position[1]-2].islower() or board[position[0]+1][position[1]-2].isdigit()):
             switchPos((position[0], position[1]), (position[0]+1, position[1]-2), tmpBoard)
             if not isWKingChecked(tmpBoard, 0):
                 validMoves.append((position[0]+1, position[1]-2))
             switchPos((position[0]+1, position[1]-2), (position[0], position[1]), tmpBoard)
-        if j < 6 and board[position[0]+1][position[1]+2].islower():
+        if j < 6 and (board[position[0]+1][position[1]+2].islower() or board[position[0]+1][position[1]+2].isdigit()):
             switchPos((position[0], position[1]), (position[0]+1, position[1]+2), tmpBoard)
             if not isWKingChecked(tmpBoard, 0):
                 validMoves.append((position[0]+1, position[1]+2))
@@ -380,47 +380,48 @@ def getWN(position, tmpBoard):
     return validMoves
 
 def getBN(position, tmpBoard):
+    validMoves = []
     i,j = position[0], position[1]
     if i > 1:
-        if j > 0 and not board[position[0]-2][position[1]-1].islower() and not board[position[0]-2][position[1]-1].isdigit():
+        if j > 0 and (not board[position[0]-2][position[1]-1].islower() or board[position[0]-2][position[1]-1].isdigit()):
             switchPos((position[0], position[1]), (position[0]-2, position[1]-1), tmpBoard)
             if not isBKingChecked(tmpBoard, 1):
                 validMoves.append((position[0]-2, position[1]-1))
             switchPos((position[0]-2, position[1]-1), (position[0], position[1]), tmpBoard)
-        if j < 7 and not board[position[0]-2][position[1]+1].islower() and not board[position[0]-2][position[1]+1].isdigit():
+        if j < 7 and (not board[position[0]-2][position[1]+1].islower() or board[position[0]-2][position[1]+1].isdigit()):
             switchPos((position[0], position[1]), (position[0]-2, position[1]+1), tmpBoard)
             if not isBKingChecked(tmpBoard, 1):
                 validMoves.append((position[0]-2, position[1]+1))
             switchPos((position[0]-2, position[1]+1), (position[0], position[1]), tmpBoard)
     if i > 0:
-        if j > 1 and not board[position[0]-1][position[1]-2].islower() and not board[position[0]-1][position[1]-2].isdigit():
+        if j > 1 and (not board[position[0]-1][position[1]-2].islower() or board[position[0]-1][position[1]-2].isdigit()):
             switchPos((position[0], position[1]), (position[0]-1, position[1]-2), tmpBoard)
             if not isBKingChecked(tmpBoard, 1):
                 validMoves.append((position[0]-1, position[1]-2))
             switchPos((position[0]-1, position[1]-2), (position[0], position[1]), tmpBoard)
-        if j < 6 and not board[position[0]-1][position[1]+2].islower() and not board[position[0]-1][position[1]+2].isdigit():
+        if j < 6 and (not board[position[0]-1][position[1]+2].islower() or board[position[0]-1][position[1]+2].isdigit()):
             switchPos((position[0], position[1]), (position[0]-1, position[1]+2), tmpBoard)
             if not isBKingChecked(tmpBoard, 1):
                 validMoves.append((position[0]-1, position[1]+2))
             switchPos((position[0]-1, position[1]+2), (position[0], position[1]), tmpBoard)
-    if i < 5:
-        if j > 0 and not board[position[0]+2][position[1]-1].islower() and not board[position[0]+2][position[1]-1].isdigit():
+    if i < 6:
+        if j > 0 and (not board[position[0]+2][position[1]-1].islower() or board[position[0]+2][position[1]-1].isdigit()):
             switchPos((position[0], position[1]), (position[0]+2, position[1]-1), tmpBoard)
             if not isBKingChecked(tmpBoard, 1):
                 validMoves.append((position[0]+2, position[1]-1))
             switchPos((position[0]+2, position[1]-1), (position[0], position[1]), tmpBoard)
-        if j < 7 and not board[position[0]+2][position[1]+1].islower() and not board[position[0]+2][position[1]+1].isdigit():
+        if j < 7 and (not board[position[0]+2][position[1]+1].islower() or board[position[0]+2][position[1]+1].isdigit()):
             switchPos((position[0], position[1]), (position[0]+2, position[1]+1), tmpBoard)
             if not isBKingChecked(tmpBoard, 1):
                 validMoves.append((position[0]+2, position[1]+1))
             switchPos((position[0]+2, position[1]+1), (position[0], position[1]), tmpBoard)
-    if i < 6:
-        if j > 1 and not board[position[0]+1][position[1]-2].islower() and not board[position[0]+1][position[1]-2].isdigit():
+    if i < 7:
+        if j > 1 and (not board[position[0]+1][position[1]-2].islower() or board[position[0]+1][position[1]-2].isdigit()):
             switchPos((position[0], position[1]), (position[0]+1, position[1]-2), tmpBoard)
             if not isBKingChecked(tmpBoard, 1):
                 validMoves.append((position[0]+1, position[1]-2))
             switchPos((position[0]+1, position[1]-2), (position[0], position[1]), tmpBoard)
-        if j < 6 and not board[position[0]+1][position[1]+2].islower() and not board[position[0]+1][position[1]+2].isdigit():
+        if j < 6 and (not board[position[0]+1][position[1]+2].islower() or board[position[0]+1][position[1]+2].isdigit()):
             switchPos((position[0], position[1]), (position[0]+1, position[1]+2), tmpBoard)
             if not isBKingChecked(tmpBoard, 1):
                 validMoves.append((position[0]+1, position[1]+2))
