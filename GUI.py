@@ -72,6 +72,10 @@ def moveSelected(selected, position):
     drawSquare(selected[0], selected[1], True, False, False)
     drawSquare(position[0], position[1], True, False, False)
     pygame.display.update()
+    if board[position[0]][position[1]] == 'k':
+        bK = board[position[0]][position[1]]
+    elif board[position[0]][position[1]] == 'K':
+        wK = board[position[0]][position[1]]
 
 
 def draw_entire_board():

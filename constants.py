@@ -10,6 +10,8 @@ high_green = (212,108,81)
 move_white = (214,214,189)
 move_green = (106,135,77)
 selected = (-1, -1)
+bK = (0, 4)
+wK = (7, 4)
 wPawn = pygame.image.load('sprites/white_pawn.png')
 wKing = pygame.image.load('sprites/white_king.png')
 wQueen = pygame.image.load('sprites/white_queen.png')
@@ -22,6 +24,8 @@ bQueen = pygame.image.load('sprites/black_queen.png')
 bBishop = pygame.image.load('sprites/black_bishop.png')
 bKnight = pygame.image.load('sprites/black_knight.png')
 bRook = pygame.image.load('sprites/black_rook.png')
+turn = False
+highlightMode = False
 colourTable = [
     ['w', 'g', 'w', 'g', 'w', 'g', 'w', 'g'],
     ['g', 'w', 'g', 'w', 'g', 'w', 'g', 'w'],
@@ -36,3 +40,9 @@ board = [
     ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
     ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
 ]
+enpassent = (-1, -1)
+wCastleL = True
+wCastleR = True
+bCastleL = True
+bCastleR = True
+
