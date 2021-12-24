@@ -1,4 +1,10 @@
 def switchPos(pos1, pos2, game):
+
+    if game.board[pos1[0]][pos1[1]] == 'K':
+        game.wK = (pos2[0], pos2[1])
+    elif game.board[pos1[0]][pos1[1]] == 'k':
+        game.bK = (pos2[0], pos2[1])
+
     if game.initial == '0':
         game.initial = game.board[pos2[0]][pos2[1]]
         game.board[pos2[0]][pos2[1]] = game.board[pos1[0]][pos1[1]]
@@ -57,13 +63,13 @@ def isBKingChecked(game, side):
             break
 
     for k in range (1, min(i, j)+1):
-        if game.board[i-k][j-k] == 'B' or game.board[i-k][j-k] == 'Q' or ((game.board[i-k][j-k] == 'P' or game.board[i-k][j-k] == 'K') and k == 1):
+        if game.board[i-k][j-k] == 'B' or game.board[i-k][j-k] == 'Q' or (game.board[i-k][j-k] == 'K' and k == 1):
             return True  
         if not game.board[i-k][j-k].isdigit():
             break
 
     for k in range (1, min(i, (7-j))+1):
-        if game.board[i-k][j+k] == 'B' or game.board[i-k][j+k] == 'Q' or ((game.board[i-k][j+k] == 'P' or game.board[i-k][j+k] == 'K') and k == 1):
+        if game.board[i-k][j+k] == 'B' or game.board[i-k][j+k] == 'Q' or (game.board[i-k][j+k] == 'K' and k == 1):
             return True
         if not game.board[i-k][j+k].isdigit():
             break
@@ -117,7 +123,6 @@ def isWKingChecked(game, side):
             return True
         if not game.board[k][j].isdigit():
             break
-
     for k in range (j-1, -1, -1):
         if game.board[i][k] == 'r' or game.board[i][k] == 'q' or (game.board[i][k] == 'k' and k == j-1):
             return True
@@ -128,7 +133,6 @@ def isWKingChecked(game, side):
             return True
         if not game.board[i][k].isdigit():
             break
-
     for k in range (1, min(i, j)+1):
         if game.board[i-k][j-k] == 'b' or game.board[i-k][j-k] == 'q' or ((game.board[i-k][j-k] == 'p' or game.board[i-k][j-k] == 'k') and k == 1):
             return True  
@@ -142,13 +146,13 @@ def isWKingChecked(game, side):
             break
 
     for k in range (1, min((7-i), j)+1):
-        if game.board[i+k][j-k] == 'b' or game.board[i+k][j-k] == 'q' or ((game.board[i+k][j-k] == 'p' or game.board[i+k][j-k] == 'k') and k == 1):
+        if game.board[i+k][j-k] == 'b' or game.board[i+k][j-k] == 'q' or (game.board[i+k][j-k] == 'k' and k == 1):
             return True  
         if not game.board[i+k][j-k].isdigit():
             break
 
     for k in range (1, min((7-i), (7-j))+1):
-        if game.board[i+k][j+k] == 'b' or game.board[i+k][j+k] == 'q' or ((game.board[i+k][j+k] == 'p' or game.board[i+k][j+k] == 'k') and k == 1):
+        if game.board[i+k][j+k] == 'b' or game.board[i+k][j+k] == 'q' or (game.board[i+k][j+k] == 'k' and k == 1):
             return True
         if not game.board[i+k][j+k].isdigit():
             break
@@ -569,7 +573,7 @@ def getWK(position, game):
                 validMoves.append((position[0], position[1]+1)) 
             switchPos((position[0], position[1]+1), (position[0], position[1]), game)   
     
-    if not isWKingChecked(game, 0):
+    if not isWKingChecked(game, 0) and game.wK == (7, 4):
         if game.wCastleL and game.board[0][3] == '0' and game.board[0][2] == '0' and game.board[0][1] == '0':
             switchPos((7, 4), (7, 3), game)
             if not isWKingChecked(game, 1):
@@ -589,7 +593,6 @@ def getWK(position, game):
                 switchPos((7, 6), (7, 4), game)
             else:
                 switchPos((7, 5), (7, 4), game)
-
     return validMoves
 
 def getBK(position, game):
@@ -641,7 +644,7 @@ def getBK(position, game):
                 validMoves.append((position[0], position[1]+1))    
             switchPos((position[0], position[1]+1), (position[0], position[1]), game)
 
-    if not isBKingChecked(game, 0):
+    if not isBKingChecked(game, 0) and game.bK == (0, 4):
         if game.bCastleL and game.board[0][3] == '0' and game.board[0][2] == '0' and game.board[0][1] == '0':
             switchPos((0, 4), (0, 3), game)
             if not isBKingChecked(game, 0):

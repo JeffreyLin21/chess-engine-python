@@ -83,24 +83,24 @@ def enPassant(game, selected, position):
 
 def castle(game, selected, position):
     if position[1] == 2 or position[1] == 6 and selected[1] == 4:
-        if game.board[selected[0]][selected[1]] == 'k':
+        if game.board[selected[0]][selected[1]] == 'k' and position[0] == 0:
             if position[1] == 2:
                 game.board[0][3] = 'r'
                 game.board[0][0] = '0'    
                 drawSquare(game, 0, 3, True, False, False)
                 drawSquare(game, 0, 0, True, False, False)            
-            elif position[1] == 6:
+            elif position[1] == 6 and game.bCastleR:
                 game.board[0][5] = 'r'
                 game.board[0][7] = '0'   
                 drawSquare(game, 0, 5, True, False, False)
                 drawSquare(game, 0, 7, True, False, False)
-        elif game.board[selected[0]][selected[1]] == 'K':
-            if position[1] == 2:
+        elif game.board[selected[0]][selected[1]] == 'K' and position[0] == 7:
+            if position[1] == 2 and game.wCastleL:
                 game.board[7][3] = 'R'
                 game.board[7][0] = '0'    
                 drawSquare(game, 7, 3, True, False, False)
                 drawSquare(game, 7, 0, True, False, False)            
-            elif position[1] == 6:
+            elif position[1] == 6 and game.wCastleR:
                 game.board[7][5] = 'R'
                 game.board[7][7] = '0'   
                 drawSquare(game, 7, 5, True, False, False)

@@ -3,6 +3,7 @@ from gui import draw_entire_board
 from gui import pygame
 from gui import select
 from gui import moveSelected
+from gui import drawSquare
 
 def isNotSame(game, selected, position):
     if game.board[position[0]][position[1]].isdigit():
@@ -10,7 +11,7 @@ def isNotSame(game, selected, position):
     if game.board[position[0]][position[1]].islower() == game.board[selected[0]][selected[1]].islower():
         return False
     return True
-
+ 
 def switchTurn(game):
     if game.turn:
         game.turn = False
