@@ -1,5 +1,5 @@
 import pygame
-from engine import *
+from engine import getMoves
 
 pygame.init()
 pygame.display.set_caption("Chess")
@@ -72,33 +72,82 @@ def select(game, pos):
         drawSquare(game, move[0], move[1], False, False, True)
     pygame.display.update()
 
+def enPassant(game, selected, position):
+    if game.board[position[0]][position[1]] == '0' and not position[1] == selected[1]:
+        if game.board[selected[0]][selected[1]] == 'P':
+            game.board[position[0]+1][position[1]] = '0'
+            drawSquare(game, position[0]+1, position[1], True, False, False)
+        elif game.board[selected[0]][selected[1]] == 'p':
+            game.board[position[0]-1][position[1]] = '0'
+            drawSquare(game, position[0]-1, position[1], True, False, False)
+
+def castle(game, selected, position):
+    if position[1] == 2 or position[1] == 6 and selected[1] == 4:
+        if game.board[selected[0]][selected[1]] == 'k':
+            if position[1] == 2:
+                game.board[0][3] = 'r'
+                game.board[0][0] = '0'    
+                drawSquare(game, 0, 3, True, False, False)
+                drawSquare(game, 0, 0, True, False, False)            
+            elif position[1] == 6:
+                game.board[0][5] = 'r'
+                game.board[0][7] = '0'   
+                drawSquare(game, 0, 5, True, False, False)
+                drawSquare(game, 0, 7, True, False, False)
+        elif game.board[selected[0]][selected[1]] == 'K':
+            if position[1] == 2:
+                game.board[7][3] = 'R'
+                game.board[7][0] = '0'    
+                drawSquare(game, 7, 3, True, False, False)
+                drawSquare(game, 7, 0, True, False, False)            
+            elif position[1] == 6:
+                game.board[7][5] = 'R'
+                game.board[7][7] = '0'   
+                drawSquare(game, 7, 5, True, False, False)
+                drawSquare(game, 7, 7, True, False, False)
+
+def updateEnPassant(game, selected, position):
+    if game.board[position[0]][position[1]] == 'P' and selected[0] - position[0]== 2:
+        game.enpassant = (position[0], position[1], 1)
+    elif game.board[position[0]][position[1]] == 'p' and position[0] - selected[0] == 2:
+        game.enpassant = (position[0], position[1], 0)
+    else:
+        game.enpassant = (-1, -1, -1)
+
+def updateCastle(game, selected, position):
+        if game.board[position[0]][position[1]] == 'K':
+            game.wK = (position[0], position[1])
+            game.wCastleL = False
+            game.wCastleR = False
+        elif game.board[position[0]][position[1]] == 'k':
+            game.bK = (position[0], position[1])
+            game.bCastleL = False
+            game.bCastleR = False
+        
+        if selected[0] == 0 and selected[1] == 0:
+            game.bCastleL = False
+        elif selected[0] == 0 and selected[1] == 7:
+            game.bCastleR = False
+        elif selected[0] == 7 and selected[1] == 0:
+            game.wCastleL = False
+        elif selected[0] == 7 and selected[1] == 7:
+            game.wCastleR = False
+            
+
 def moveSelected(game, selected, position):
     if position in game.moves:
 
-        if game.board[position[0]][position[1]] == '0' and not position[1] == selected[1]:
-            if game.board[selected[0]][selected[1]] == 'P':
-                game.board[position[0]+1][position[1]] = '0'
-                drawSquare(game, position[0]+1, position[1], True, False, False)
-            elif game.board[selected[0]][selected[1]] == 'p':
-                game.board[position[0]-1][position[1]] = '0'
-                drawSquare(game, position[0]-1, position[1], True, False, False)
+        enPassant(game, selected, position)
+        castle(game, selected, position)
 
         game.board[position[0]][position[1]] = game.board[selected[0]][selected[1]]
         game.board[selected[0]][selected[1]] = '0'
         drawSquare(game, selected[0], selected[1], True, False, False)
         drawSquare(game, position[0], position[1], True, False, False)
-        
-        if game.board[position[0]][position[1]] == 'K':
-            game.wK = (position[0], position[1])
-        elif game.board[position[0]][position[1]] == 'k':
-            game.bK = (position[0], position[1])
 
-        if game.board[position[0]][position[1]] == 'P' and selected[0] - position[0]== 2:
-            game.enpassant = (position[0], position[1], 1)
-        elif game.board[position[0]][position[1]] == 'p' and position[0] - selected[0] == 2:
-            game.enpassant = (position[0], position[1], 0)
-        else:
-            game.enpassant = (-1, -1, -1)
+        updateEnPassant(game, selected, position)
+        updateCastle(game, selected, position)
+
         pygame.display.update()
         return True
     else:

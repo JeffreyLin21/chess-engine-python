@@ -7,7 +7,7 @@ from gui import moveSelected
 def isNotSame(game, selected, position):
     if game.board[position[0]][position[1]].isdigit():
         return True
-    if game.board[position[0]][position[1]].islower() == board[selected[0]][selected[1]].islower():
+    if game.board[position[0]][position[1]].islower() == game.board[selected[0]][selected[1]].islower():
         return False
     return True
 

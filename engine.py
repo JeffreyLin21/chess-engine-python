@@ -568,6 +568,28 @@ def getWK(position, game):
             if not isWKingChecked(game, 0):
                 validMoves.append((position[0], position[1]+1)) 
             switchPos((position[0], position[1]+1), (position[0], position[1]), game)   
+    
+    if not isWKingChecked(game, 0):
+        if game.wCastleL and game.board[0][3] == '0' and game.board[0][2] == '0' and game.board[0][1] == '0':
+            switchPos((7, 4), (7, 3), game)
+            if not isWKingChecked(game, 1):
+                switchPos((7, 3), (7, 2), game)
+                if not isWKingChecked(game, 0):
+                    validMoves.append((7, 2))
+                switchPos((7, 2), (7, 4), game)
+            else:
+                switchPos((7, 3), (7, 4), game)
+            
+        if game.wCastleL and game.board[7][5] == '0' and game.board[7][6] == '0':
+            switchPos((7, 4), (7, 5), game)
+            if not isWKingChecked(game, 0):
+                switchPos((7, 5), (7, 6), game)
+                if not isWKingChecked(game, 0):
+                    validMoves.append((7, 6))
+                switchPos((7, 6), (7, 4), game)
+            else:
+                switchPos((7, 5), (7, 4), game)
+
     return validMoves
 
 def getBK(position, game):
@@ -618,6 +640,28 @@ def getBK(position, game):
             if not isBKingChecked(game, 1):
                 validMoves.append((position[0], position[1]+1))    
             switchPos((position[0], position[1]+1), (position[0], position[1]), game)
+
+    if not isBKingChecked(game, 0):
+        if game.bCastleL and game.board[0][3] == '0' and game.board[0][2] == '0' and game.board[0][1] == '0':
+            switchPos((0, 4), (0, 3), game)
+            if not isBKingChecked(game, 0):
+                switchPos((0, 3), (0, 2), game)
+                if not isBKingChecked(game, 0):
+                    validMoves.append((0, 2))
+                switchPos((0, 2), (0, 4), game)
+            else:
+                switchPos((0, 3), (0, 4), game)
+            
+        if game.bCastleR and game.board[0][5] == '0' and game.board[0][6] == '0':
+            switchPos((0, 4), (0, 5), game)
+            if not isBKingChecked(game, 0):
+                switchPos((0, 5), (0, 6), game)
+                if not isBKingChecked(game, 0):
+                    validMoves.append((0, 6))
+                switchPos((0, 6), (0, 4), game)
+            else:
+                switchPos((0, 5), (0, 4), game)
+
     return validMoves
 
 def getMoves(position, game):
