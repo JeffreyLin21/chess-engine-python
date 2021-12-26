@@ -4,6 +4,7 @@ pygame.init()
 class Game:
     white = (238, 238, 210)
     green = (118, 150, 86)
+    yellow = (255,170,0)
     selected_green = (186, 202, 43)
     selected_white = (246, 246, 105)
     high_white = (236,126,106)
@@ -48,3 +49,15 @@ class Game:
     bCastleR = True
     initial = '0'
     moves = []
+    history = {}
+    result = {
+        0 : "White wins!",
+        1 : "Black wins!",
+        2: "Draw",
+    }
+    fiftyMove = 0
+    whitePoints = [8, 2, 2, 2, 1] 
+    blackPoints = [8, 2, 2, 2, 1] 
+    blackScore = 0
+    whiteScore = 0
+    restart = False

@@ -37,7 +37,7 @@ def isBKingChecked(game, side):
             return True
         if j < 6 and game.board[i+1][j+2] == 'N':
             return True
-
+    
     for k in range (i-1, -1, -1):
         if game.board[k][j] == 'R' or game.board[k][j] == 'Q' or (game.board[k][j] == 'K' and k == i-1):
             return True
@@ -73,7 +73,6 @@ def isBKingChecked(game, side):
             return True
         if not game.board[i-k][j+k].isdigit():
             break
-
     for k in range (1, min((7-i), j)+1):
         if game.board[i+k][j-k] == 'B' or game.board[i+k][j-k] == 'Q' or ((game.board[i+k][j-k] == 'P' or game.board[i+k][j-k] == 'K') and k == 1):
             return True  
@@ -551,15 +550,15 @@ def getWK(position, game):
                 validMoves.append((position[0]+1, position[1]))   
             switchPos((position[0]+1, position[1]), (position[0], position[1]), game)
         if position[1] > 0 and(game.board[position[0]+1][position[1]-1].islower() or game.board[position[0]+1][position[1]-1].isdigit()):
-            switchPos((position[0], position[1]), (position[0]-1, position[1]-1), game)
+            switchPos((position[0], position[1]), (position[0]+1, position[1]-1), game)
             if not isWKingChecked(game, 0):
                 validMoves.append((position[0]+1, position[1]-1))      
-            switchPos((position[0]-1, position[1]-1), (position[0], position[1]), game)     
+            switchPos((position[0]+1, position[1]-1), (position[0], position[1]), game)     
         if position[1] < 7 and(game.board[position[0]+1][position[1]+1].islower() or game.board[position[0]+1][position[1]+1].isdigit()):
-            switchPos((position[0], position[1]), (position[0]-1, position[1]+1), game)
+            switchPos((position[0], position[1]), (position[0]+1, position[1]+1), game)
             if not isWKingChecked(game, 0):
                 validMoves.append((position[0]+1, position[1]+1))  
-            switchPos((position[0]-1, position[1]+1), (position[0], position[1]), game)
+            switchPos((position[0]+1, position[1]+1), (position[0], position[1]), game)
     if position[1] > 0:
         if game.board[position[0]][position[1]-1].islower() or game.board[position[0]][position[1]-1].isdigit():
             switchPos((position[0], position[1]), (position[0], position[1]-1), game)

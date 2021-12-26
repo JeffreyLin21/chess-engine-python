@@ -1,9 +1,6 @@
+import pygame
 from Board_class import Game
-from gui import draw_entire_board
-from gui import pygame
-from gui import select
-from gui import moveSelected
-from gui import drawSquare
+from gui import draw_entire_board, select, moveSelected, drawSquare
 
 def isNotSame(game, selected, position):
     if game.board[position[0]][position[1]].isdigit():
@@ -37,10 +34,42 @@ def controller(game, mouseButton, position):
             game.highlightMode = True
         drawSquare(game, position[0], position[1], False, True, False)
         pygame.display.update()
-        
+
+def refresh(game):
+    game.selected = (-1, -1)
+    game.turn = False
+    game.highlightMode = False
+    game.board = [
+        ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+        ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+        ['0', '0', '0', '0', '0', '0', '0', '0'],
+        ['0', '0', '0', '0', '0', '0', '0', '0'],
+        ['0', '0', '0', '0', '0', '0', '0', '0'],
+        ['0', '0', '0', '0', '0', '0', '0', '0'],
+        ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+        ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+    ]
+    game.enpassant = (-1, -1, -1)
+    game.bK = (0, 4)
+    game.wK = (7, 4)
+    game.wCastleL = True
+    game.wCastleR = True
+    game.bCastleL = True
+    game.bCastleR = True
+    game.initial = '0'
+    game.moves = []
+    game.history = {}
+    game.fiftyMove = 0
+    game.blackScore = 0
+    game.whiteScore = 0
+    game.restart = False
+
 def main(game):
     running = True
-    while running:        
+    while running:
+        if game.restart:
+            running = False
+            start()        
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 controller(game, event.button, (pygame.mouse.get_pos()[1] // 90, pygame.mouse.get_pos()[0] // 90))
@@ -48,6 +77,10 @@ def main(game):
                 running = False
         pygame.time.Clock().tick(60)
 
-game = Game()
-draw_entire_board(game)
-main(game)
+def start():
+    game = Game()
+    refresh(game)
+    draw_entire_board(game)
+    main(game)
+
+start()
