@@ -47,6 +47,7 @@ def drawSquare(game, x, y, selected, highlighted, isPossibleMove):
         x = 7-x
         y = 7-y
         
+
     colour = (0,0,0)
     if game.colourTable[i%2][j%2] == 'w':
         if selected:
@@ -139,6 +140,53 @@ def updateCastle(game, selected, position):
         elif selected[0] == 7 and selected[1] == 7:
             game.wCastleR = False
 
+def promotePawn(game, position):
+
+    N = 'N'
+    B = 'B'
+    R = 'R'
+    Q = 'Q'
+    
+    pygame.draw.rect(screen, game.green, (0, 0, 90, 360))
+
+    if position[0] == 0:
+        screen.blit(game.wKnight, (15, 16))
+        screen.blit(game.wBishop, (15, 106))
+        screen.blit(game.wRook, (15, 196))
+        screen.blit(game.wQueen, (10, 286))
+    else:
+        N = 'n'
+        B = 'b'
+        R = 'r'
+        Q = 'q'
+        screen.blit(game.bKnight, (15, 16))
+        screen.blit(game.bBishop, (15, 106))
+        screen.blit(game.bRook, (15, 196))
+        screen.blit(game.bQueen, (10, 286))
+    
+    pygame.display.update()
+
+    running  = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = pygame.mouse.get_pos()[1] // 90, pygame.mouse.get_pos()[0] // 90
+                if x < 4 and y == 0:
+                    running = False
+                    if x == 0:
+                        game.board[position[0]][position[1]] = N
+                    elif x == 1:
+                        game.board[position[0]][position[1]] = B
+                    elif x == 2:
+                        game.board[position[0]][position[1]] = R
+                    elif x == 3:
+                        game.board[position[0]][position[1]] = Q
+    
+    draw_entire_board(game)
+    drawSquare(game, position[0], position[1], True, False, False)
+    pygame.display.update()
+
+
 def updateSpecial(game, selected, position):
     game.fiftyMove += 1
 
@@ -190,6 +238,11 @@ def updateSpecial(game, selected, position):
                 drawSquare(game, 7, 7, True, False, False)    
     game.board[position[0]][position[1]] = game.board[selected[0]][selected[1]]
     game.board[selected[0]][selected[1]] = '0'
+
+    if game.board[position[0]][position[1]] == 'P' or game.board[position[0]][position[1]] == 'p':
+        if position[0] == 0 or position[0] == 7:
+            promotePawn(game, position)
+
     updateCastle(game, selected, position)
     if isWKingChecked(game, 0) or isBKingChecked(game, 1):
         sound = pygame.mixer.Sound('sounds/check.wav')
