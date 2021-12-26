@@ -1,4 +1,5 @@
 import pygame
+import random
 from Board_class import Game
 from gui import draw_entire_board, select, moveSelected, drawSquare
 
@@ -63,6 +64,7 @@ def refresh(game):
     game.blackScore = 0
     game.whiteScore = 0
     game.restart = False
+    game.flipped = False
 
 def main(game):
     running = True
@@ -72,14 +74,22 @@ def main(game):
             start()        
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                controller(game, event.button, (pygame.mouse.get_pos()[1] // 90, pygame.mouse.get_pos()[0] // 90))
+                if game.flipped:
+                    controller(game, event.button, (7-(pygame.mouse.get_pos()[1] // 90), 7- (pygame.mouse.get_pos()[0] // 90)))
+                else:
+                    controller(game, event.button, (pygame.mouse.get_pos()[1] // 90, pygame.mouse.get_pos()[0] // 90))
             if event.type == pygame.QUIT:
                 running = False
         pygame.time.Clock().tick(60)
 
 def start():
+
     game = Game()
     refresh(game)
+
+    if random.randint(0,1) == 1:
+        game.flipped = True
+
     draw_entire_board(game)
     main(game)
 

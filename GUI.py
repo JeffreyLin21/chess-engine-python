@@ -41,8 +41,14 @@ def addRecord(game):
     return False
 
 def drawSquare(game, x, y, selected, highlighted, isPossibleMove):
+
+    i,j = x,y
+    if game.flipped:
+        x = 7-x
+        y = 7-y
+        
     colour = (0,0,0)
-    if game.colourTable[x%2][y%2] == 'w':
+    if game.colourTable[i%2][j%2] == 'w':
         if selected:
             colour = game.selected_white
         elif highlighted:
@@ -61,37 +67,37 @@ def drawSquare(game, x, y, selected, highlighted, isPossibleMove):
         else:
             colour = game.green
     if isPossibleMove:
-        if game.board[x][y] == '0':
+        if game.board[i][j] == '0':
             pygame.draw.circle(screen, colour, (90 * y + 45, 90 * x + 45), 15)
         else:
             pygame.draw.circle(screen, colour, (90 * y + 45, 90 * x + 45), 44, 6)
     else:
         pygame.draw.rect(screen, colour, (90 * y, 90 * x, 90, 90))
-        if game.board[x][y].islower():
-            if game.board[x][y] == 'p':
+        if game.board[i][j].islower():
+            if game.board[i][j] == 'p':
                 screen.blit(game.bPawn, (90 * y + 21, 90 * x + 16))
-            elif game.board[x][y] == 'k':
+            elif game.board[i][j] == 'k':
                 screen.blit(game.bKing, (90 * y + 15, 90 * x + 14))
-            elif game.board[x][y] == 'q':
+            elif game.board[i][j] == 'q':
                 screen.blit(game.bQueen, (90 * y + 10, 90 * x + 10))
-            elif game.board[x][y] == 'n':
+            elif game.board[i][j] == 'n':
                 screen.blit(game.bKnight, (90 * y + 14, 90 * x + 14))
-            elif game.board[x][y] == 'b':
+            elif game.board[i][j] == 'b':
                 screen.blit(game.bBishop, (90 * y + 14, 90 * x + 14))
-            elif game.board[x][y] == 'r':
+            elif game.board[i][j] == 'r':
                 screen.blit(game.bRook, (90 * y + 16, 90 * x + 11)) 
         else:
-            if game.board[x][y] == 'P':
+            if game.board[i][j] == 'P':
                 screen.blit(game.wPawn, (90 * y + 21, 90 * x + 16))
-            elif game.board[x][y] == 'K':
+            elif game.board[i][j] == 'K':
                 screen.blit(game.wKing, (90 * y + 15, 90 * x + 14))
-            elif game.board[x][y] == 'Q':
+            elif game.board[i][j] == 'Q':
                 screen.blit(game.wQueen, (90 * y + 10, 90 * x + 10))
-            elif game.board[x][y] == 'N':
+            elif game.board[i][j] == 'N':
                 screen.blit(game.wKnight, (90 * y + 14, 90 * x + 14))
-            elif game.board[x][y] == 'B':
+            elif game.board[i][j] == 'B':
                 screen.blit(game.wBishop, (90 * y + 14, 90 * x + 14))
-            elif game.board[x][y] == 'R':
+            elif game.board[i][j] == 'R':
                 screen.blit(game.wRook, (90 * y + 16, 90 * x + 11))  
 
 def draw_entire_board(game):

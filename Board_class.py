@@ -61,3 +61,4 @@ class Game:
     blackScore = 0
     whiteScore = 0
     restart = False
+    flipped = False
