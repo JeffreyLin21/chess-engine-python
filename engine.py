@@ -576,7 +576,7 @@ def getWK(position, game):
             switchPos((position[0], position[1]+1), (position[0], position[1]), game)   
     
     if not isWKingChecked(game, 0) and game.wK == (7, 4):
-        if game.wCastleL and game.board[0][3] == '0' and game.board[0][2] == '0' and game.board[0][1] == '0':
+        if game.wCastleL and game.board[7][3] == '0' and game.board[7][2] == '0' and game.board[7][1] == '0':
             switchPos((7, 4), (7, 3), game)
             if not isWKingChecked(game, 1):
                 switchPos((7, 3), (7, 2), game)
@@ -586,7 +586,7 @@ def getWK(position, game):
             else:
                 switchPos((7, 3), (7, 4), game)
             
-        if game.wCastleL and game.board[7][5] == '0' and game.board[7][6] == '0':
+        if game.wCastleR and game.board[7][5] == '0' and game.board[7][6] == '0':
             switchPos((7, 4), (7, 5), game)
             if not isWKingChecked(game, 0):
                 switchPos((7, 5), (7, 6), game)
