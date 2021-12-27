@@ -780,6 +780,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
             for j in range (8):
                 if not game.board[i][j] == '0' and not game.board[i][j].islower():
                     for move in getMoves( (i, j), game):
+                        initial =game.board[move[0]][move[1]]
                         switchPos((i, j), move, game)
 
                         if game.board[move[0]][move[1]] == 'P' and move[0] == 0:
@@ -793,6 +794,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                                 bestVal = val
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                             game.board[move[0]][move[1]] = 'B'
                             val = computeMove(game, depth - 1, False, alpha, beta)
@@ -803,6 +805,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                                 bestVal = val
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                             game.board[move[0]][move[1]] = 'R'
                             val = computeMove(game, depth - 1, False, alpha, beta)
@@ -813,6 +816,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                             game.board[move[0]][move[1]] = 'Q'
                             val = computeMove(game, depth - 1, False, alpha, beta)
@@ -823,6 +827,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                             game.board[move[0]][move[1]] = 'P'
 
@@ -836,6 +841,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                             game.board[move[0]][move[1]] = 'b'
                             val = computeMove(game, depth - 1, False, alpha, beta)
@@ -846,6 +852,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                             game.board[move[0]][move[1]] = 'r'
                             val = computeMove(game, depth - 1, False, alpha, beta)
@@ -856,6 +863,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                             game.board[move[0]][move[1]] = 'q'
                             val = computeMove(game, depth - 1, False, alpha, beta)
@@ -866,6 +874,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal                                
                             game.board[move[0]][move[1]] = 'p'
                         else:
@@ -876,8 +885,10 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             alpha = max( alpha, bestVal)
                             if beta <= alpha:
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                         switchPos(move, (i, j), game)
+                        game.board[move[0]][move[1]] = initial
 
         return bestVal
     
@@ -887,6 +898,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
             for j in range (8):
                 if game.board[i][j].islower():
                     for move in getMoves( (i, j), game):
+                        initial = game.board[move[0]][move[1]]
                         switchPos((i, j), move, game)
 
                         if game.board[move[0]][move[1]] == 'P' and move[0] == 0:
@@ -899,6 +911,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                             game.board[move[0]][move[1]] = 'B'
                             val = computeMove(game, depth - 1, False, alpha, beta)
@@ -909,6 +922,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                             game.board[move[0]][move[1]] = 'R'
                             val = computeMove(game, depth - 1, False, alpha, beta)
@@ -919,6 +933,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                             game.board[move[0]][move[1]] = 'Q'
                             val = computeMove(game, depth - 1, False, alpha, beta)
@@ -929,6 +944,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                             game.board[move[0]][move[1]] = 'P'
 
@@ -942,6 +958,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                             game.board[move[0]][move[1]] = 'b'
                             val = computeMove(game, depth - 1, False, alpha, beta)
@@ -952,6 +969,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                             game.board[move[0]][move[1]] = 'r'
                             val = computeMove(game, depth - 1, False, alpha, beta)
@@ -962,6 +980,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                             game.board[move[0]][move[1]] = 'q'
                             val = computeMove(game, depth - 1, False, alpha, beta)
@@ -972,6 +991,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal                                
                             game.board[move[0]][move[1]] = 'p'
                         else:
@@ -982,6 +1002,8 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             beta = min( beta, bestVal)
                             if beta <= alpha:
                                 switchPos(move, (i, j), game)
+                                game.board[move[0]][move[1]] = initial
                                 return bestVal
                         switchPos(move, (i, j), game)
+                        game.board[move[0]][move[1]] = initial
         return bestVal
