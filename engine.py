@@ -740,34 +740,34 @@ def calculateBoard(game):
                     sum += end_king_table[i*j]
             elif game.board[i][j] == 'p':
                 if game.whiteScore < 14 and game.blackScore < 14:
-                    sum -= mid_value[0] + mid_pawn_table[flip[i*j]]
+                    sum = sum - mid_value[0] - mid_pawn_table[flip[i*j]]
                 else:
-                    sum -= end_value[0] + end_pawn_table[flip[i*j]]
+                    sum = sum - end_value[0] - end_pawn_table[flip[i*j]]
             elif game.board[i][j] == 'n':
                 if game.whiteScore < 14 and game.blackScore < 14:
-                    sum -= mid_value[1] + mid_knight_table[flip[i*j]]
+                    sum = sum - mid_value[1] - mid_knight_table[flip[i*j]]
                 else:
-                    sum -= end_value[1] + end_knight_table[flip[i*j]]
+                    sum = sum - end_value[1] - end_knight_table[flip[i*j]]
             elif game.board[i][j] == 'b':
                 if game.whiteScore < 14 and game.blackScore < 14:
-                    sum -= mid_value[2] + mid_bishop_table[flip[i*j]]
+                    sum = sum - mid_value[2] - mid_bishop_table[flip[i*j]]
                 else:
-                    sum -= mid_value[2] + end_bishop_table[flip[i*j]]
+                    sum = sum - mid_value[2] - end_bishop_table[flip[i*j]]
             elif game.board[i][j] == 'r':
                 if game.whiteScore < 14 and game.blackScore < 14:
-                    sum -= mid_value[3] + mid_rook_table[flip[i*j]]
+                    sum = sum - mid_value[3] - mid_rook_table[flip[i*j]]
                 else:
-                    sum -= mid_value[3] + end_rook_table[flip[i*j]]
+                    sum = sum - mid_value[3] - end_rook_table[flip[i*j]]
             elif game.board[i][j] == 'q':
                 if game.whiteScore < 14 and game.blackScore < 14:
-                    sum -= mid_value[4] + mid_queen_table[flip[i*j]]
+                    sum = sum - mid_value[4] - mid_queen_table[flip[i*j]]
                 else:
-                    sum -= mid_value[4] + end_queen_table[flip[i*j]]
+                    sum = sum - mid_value[4] - end_queen_table[flip[i*j]]
             elif game.board[i][j] == 'k':
                 if game.whiteScore < 14 and game.blackScore < 14:
-                    sum -= mid_king_table[flip[i*j]]
+                    sum = sum - mid_king_table[flip[i*j]]
                 else:
-                    sum -= end_king_table[flip[i*j]]
+                    sum = sum - end_king_table[flip[i*j]]
     return sum
 
 def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
@@ -895,7 +895,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if val < bestVal:
                                 bestVal = val
                                 game.bestMove = (i, j, move[0], move[1], 'N')
-                            beta = min( alpha, bestVal)
+                            beta = min( beta, bestVal)
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
@@ -905,7 +905,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if val < bestVal:
                                 bestVal = val
                                 game.bestMove = (i, j, move[0], move[1], 'B')
-                            beta = min( alpha, bestVal)
+                            beta = min( beta, bestVal)
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
@@ -915,7 +915,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if val < bestVal:
                                 bestVal = val
                                 game.bestMove = (i, j, move[0], move[1], 'R')
-                            beta = min( alpha, bestVal)
+                            beta = min( beta, bestVal)
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
@@ -925,7 +925,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if val < bestVal:
                                 bestVal = val
                                 game.bestMove = (i, j, move[0], move[1], 'Q')
-                            beta = min( alpha, bestVal)
+                            beta = min( beta, bestVal)
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
@@ -938,7 +938,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if val < bestVal:
                                 bestVal = val
                                 game.bestMove = (i, j, move[0], move[1], 'n')
-                            beta = min( alpha, bestVal)
+                            beta = min( beta, bestVal)
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
@@ -948,7 +948,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if val < bestVal:
                                 bestVal = val
                                 game.bestMove = (i, j, move[0], move[1], 'b')
-                            beta = min( alpha, bestVal)
+                            beta = min( beta, bestVal)
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
@@ -958,7 +958,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if val < bestVal:
                                 bestVal = val
                                 game.bestMove = (i, j, move[0], move[1], 'r')
-                            beta = min( alpha, bestVal)
+                            beta = min( beta, bestVal)
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
@@ -968,7 +968,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if val < bestVal:
                                 bestVal = val
                                 game.bestMove = (i, j, move[0], move[1], 'q')
-                            beta = min( alpha, bestVal)
+                            beta = min( beta, bestVal)
                             if beta <= alpha:
                                 game.board[move[0]][move[1]] = 'p'
                                 switchPos(move, (i, j), game)
@@ -979,7 +979,7 @@ def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
                             if val < bestVal:
                                 bestVal = val
                                 game.bestMove = (i, j, move[0], move[1], -1)
-                            beta = min( alpha, bestVal)
+                            beta = min( beta, bestVal)
                             if beta <= alpha:
                                 switchPos(move, (i, j), game)
                                 return bestVal

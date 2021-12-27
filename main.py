@@ -75,8 +75,7 @@ def main(game):
             running = False
             start()     
         if not game.turn == game.flipped:
-            computeMove(game, 2, not game.turn, 10000, -10000)
-            print(game.bestMove)
+            computeMove(game, 1, not game.turn, -10000, 10000)
             controller(game, 1, (game.bestMove[0], game.bestMove[1]))
             controller(game, 1, (game.bestMove[2], game.bestMove[3]))
         for event in pygame.event.get():
