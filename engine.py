@@ -1,3 +1,6 @@
+import math
+from tables import *
+
 def switchPos(pos1, pos2, game):
 
     if game.board[pos1[0]][pos1[1]] == 'K':
@@ -693,3 +696,292 @@ def getMoves(position, game):
     elif tmp == 'K':
         return getWK(position, game)
     return
+
+def calculateBoard(game):
+
+    if isWKingChecked(game, 0):
+        return -100000
+
+    if isBKingChecked(game, 0):
+        return 100000
+
+    sum = 0
+    for i in range (8):
+        for j in range (8):
+            if game.board[i][j] == 'P':
+                if game.whiteScore < 14 and game.blackScore < 14:
+                    sum += mid_value[0] + mid_pawn_table[i*j]
+                else:
+                    sum += end_value[0] + end_pawn_table[i*j]
+            elif game.board[i][j] == 'N':
+                if game.whiteScore < 14 and game.blackScore < 14:
+                    sum += mid_value[1] + mid_knight_table[i*j]
+                else:
+                    sum += end_value[1] + end_knight_table[i*j]
+            elif game.board[i][j] == 'B':
+                if game.whiteScore < 14 and game.blackScore < 14:
+                    sum += mid_value[2] + mid_bishop_table[i*j]
+                else:
+                    sum += mid_value[2] + end_bishop_table[i*j]
+            elif game.board[i][j] == 'R':
+                if game.whiteScore < 14 and game.blackScore < 14:
+                    sum += mid_value[3] + mid_rook_table[i*j]
+                else:
+                    sum += mid_value[3] + end_rook_table[i*j]
+            elif game.board[i][j] == 'Q':
+                if game.whiteScore < 14 and game.blackScore < 14:
+                    sum += mid_value[4] + mid_queen_table[i*j]
+                else:
+                    sum += mid_value[4] + end_queen_table[i*j]
+            elif game.board[i][j] == 'K':
+                if game.whiteScore < 14 and game.blackScore < 14:
+                    sum += mid_king_table[i*j]
+                else:
+                    sum += end_king_table[i*j]
+            elif game.board[i][j] == 'p':
+                if game.whiteScore < 14 and game.blackScore < 14:
+                    sum -= mid_value[0] + mid_pawn_table[flip[i*j]]
+                else:
+                    sum -= end_value[0] + end_pawn_table[flip[i*j]]
+            elif game.board[i][j] == 'n':
+                if game.whiteScore < 14 and game.blackScore < 14:
+                    sum -= mid_value[1] + mid_knight_table[flip[i*j]]
+                else:
+                    sum -= end_value[1] + end_knight_table[flip[i*j]]
+            elif game.board[i][j] == 'b':
+                if game.whiteScore < 14 and game.blackScore < 14:
+                    sum -= mid_value[2] + mid_bishop_table[flip[i*j]]
+                else:
+                    sum -= mid_value[2] + end_bishop_table[flip[i*j]]
+            elif game.board[i][j] == 'r':
+                if game.whiteScore < 14 and game.blackScore < 14:
+                    sum -= mid_value[3] + mid_rook_table[flip[i*j]]
+                else:
+                    sum -= mid_value[3] + end_rook_table[flip[i*j]]
+            elif game.board[i][j] == 'q':
+                if game.whiteScore < 14 and game.blackScore < 14:
+                    sum -= mid_value[4] + mid_queen_table[flip[i*j]]
+                else:
+                    sum -= mid_value[4] + end_queen_table[flip[i*j]]
+            elif game.board[i][j] == 'k':
+                if game.whiteScore < 14 and game.blackScore < 14:
+                    sum -= mid_king_table[flip[i*j]]
+                else:
+                    sum -= end_king_table[flip[i*j]]
+    return sum
+
+def computeMove(game, depth, isMaximizingPlayer, alpha, beta):
+    if depth == 0:
+        return calculateBoard(game)
+
+    if isMaximizingPlayer:
+        bestVal = -1000000
+        for i in range (8):
+            for j in range (8):
+                if not game.board[i][j] == '0' and not game.board[i][j].islower():
+                    for move in getMoves( (i, j), game):
+                        switchPos((i, j), move, game)
+
+                        if game.board[move[0]][move[1]] == 'P' and move[0] == 0:
+                            game.board[move[0]][move[1]] = 'N'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val > bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'N')
+                            alpha = max( alpha, bestVal)
+                            if beta <= alpha:
+                                bestVal = val
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                            game.board[move[0]][move[1]] = 'B'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val > bestVal:
+                                game.bestMove = (i, j, move[0], move[1], 'B')
+                            alpha = max( alpha, bestVal)
+                            if beta <= alpha:
+                                bestVal = val
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                            game.board[move[0]][move[1]] = 'R'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val > bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'R')
+                            alpha = max( alpha, bestVal)
+                            if beta <= alpha:
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                            game.board[move[0]][move[1]] = 'Q'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val > bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'Q')
+                            alpha = max( alpha, bestVal)
+                            if beta <= alpha:
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                            game.board[move[0]][move[1]] = 'P'
+
+                        elif game.board[move[0]][move[1]] == 'p' and move[0] == 7:
+                            game.board[move[0]][move[1]] = 'n'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val > bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'n')
+                            alpha = max( alpha, bestVal)
+                            if beta <= alpha:
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                            game.board[move[0]][move[1]] = 'b'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val > bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'b')
+                            alpha = max( alpha, bestVal)
+                            if beta <= alpha:
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                            game.board[move[0]][move[1]] = 'r'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val > bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'r')
+                            alpha = max( alpha, bestVal)
+                            if beta <= alpha:
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                            game.board[move[0]][move[1]] = 'q'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val > bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'q')
+                            alpha = max( alpha, bestVal)
+                            if beta <= alpha:
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal                                
+                            game.board[move[0]][move[1]] = 'p'
+                        else:
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val > bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], -1)
+                            alpha = max( alpha, bestVal)
+                            if beta <= alpha:
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                        switchPos(move, (i, j), game)
+
+        return bestVal
+    
+    else:
+        bestVal = 1000000
+        for i in range (8):
+            for j in range (8):
+                if game.board[i][j].islower():
+                    for move in getMoves( (i, j), game):
+                        switchPos((i, j), move, game)
+
+                        if game.board[move[0]][move[1]] == 'P' and move[0] == 0:
+                            game.board[move[0]][move[1]] = 'N'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val < bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'N')
+                            beta = min( alpha, bestVal)
+                            if beta <= alpha:
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                            game.board[move[0]][move[1]] = 'B'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val < bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'B')
+                            beta = min( alpha, bestVal)
+                            if beta <= alpha:
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                            game.board[move[0]][move[1]] = 'R'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val < bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'R')
+                            beta = min( alpha, bestVal)
+                            if beta <= alpha:
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                            game.board[move[0]][move[1]] = 'Q'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val < bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'Q')
+                            beta = min( alpha, bestVal)
+                            if beta <= alpha:
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                            game.board[move[0]][move[1]] = 'P'
+
+                        elif game.board[move[0]][move[1]] == 'p' and move[0] == 7:
+                            game.board[move[0]][move[1]] = 'n'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val < bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'n')
+                            beta = min( alpha, bestVal)
+                            if beta <= alpha:
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                            game.board[move[0]][move[1]] = 'b'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val < bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'b')
+                            beta = min( alpha, bestVal)
+                            if beta <= alpha:
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                            game.board[move[0]][move[1]] = 'r'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val < bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'r')
+                            beta = min( alpha, bestVal)
+                            if beta <= alpha:
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                            game.board[move[0]][move[1]] = 'q'
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val < bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], 'q')
+                            beta = min( alpha, bestVal)
+                            if beta <= alpha:
+                                game.board[move[0]][move[1]] = 'p'
+                                switchPos(move, (i, j), game)
+                                return bestVal                                
+                            game.board[move[0]][move[1]] = 'p'
+                        else:
+                            val = computeMove(game, depth - 1, False, alpha, beta)
+                            if val < bestVal:
+                                bestVal = val
+                                game.bestMove = (i, j, move[0], move[1], -1)
+                            beta = min( alpha, bestVal)
+                            if beta <= alpha:
+                                switchPos(move, (i, j), game)
+                                return bestVal
+                        switchPos(move, (i, j), game)
+        return bestVal

@@ -2,6 +2,7 @@ import pygame
 import random
 from Board_class import Game
 from gui import draw_entire_board, select, moveSelected, drawSquare
+from engine import computeMove
 
 def isNotSame(game, selected, position):
     if game.board[position[0]][position[1]].isdigit():
@@ -15,6 +16,7 @@ def switchTurn(game):
         game.turn = False
     else:
         game.turn = True
+    
 def controller(game, mouseButton, position):
     if mouseButton == 1:
         game.highlightMode = False
@@ -71,7 +73,12 @@ def main(game):
     while running:
         if game.restart:
             running = False
-            start()        
+            start()     
+        if not game.turn == game.flipped:
+            computeMove(game, 2, not game.turn, 10000, -10000)
+            print(game.bestMove)
+            controller(game, 1, (game.bestMove[0], game.bestMove[1]))
+            controller(game, 1, (game.bestMove[2], game.bestMove[3]))
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if game.flipped:

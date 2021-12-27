@@ -62,3 +62,5 @@ class Game:
     whiteScore = 0
     restart = False
     flipped = False
+    bestMove = (-1, -1, -1, -1, -1)
+    recursion = 0
