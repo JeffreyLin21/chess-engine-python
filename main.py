@@ -1,7 +1,7 @@
 import pygame
 import random
 from Board_class import Game
-from gui import draw_entire_board, printBoard, select, moveSelected, drawSquare
+from GUI import draw_entire_board, printBoard, select, moveSelected, drawSquare
 from engine import computeMove
 
 def isNotSame(game, selected, position):
